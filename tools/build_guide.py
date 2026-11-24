@@ -136,7 +136,7 @@ def main():
             print('GBIF-fel', sp['sci'], str(ex)[:80]); return {}, None
     pre = {}
     if '--no-img' not in sys.argv:
-        with ThreadPoolExecutor(3) as ex:
+        with ThreadPoolExecutor(2) as ex:
             for k, (sp, r) in enumerate(zip(target, ex.map(facts, target))):
                 pre[sp['id']] = r
                 if k % 50 == 0:
