@@ -36,7 +36,7 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
   await page.waitForSelector('nav.tabs');
   // Ladda ner modellen (förutsättning för fältbruk)
   await page.click('nav.tabs button[data-view=more]');
-  if (await page.$('#btn-dl')) { await page.click('#btn-dl'); await page.waitForSelector('text=AI-modell och artdatabas finns på enheten', { timeout: 300000 }); }
+  if (await page.$('#btn-dl')) { await page.click('#btn-dl'); await page.waitForSelector('text=Nedladdad – fungerar offline', { timeout: 300000 }); }
 
   const has = async sel => !!(await page.$(sel));
   // Bakåt från startfliken lämnar appen (som på Android) – starta om den då
@@ -50,6 +50,7 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
     return false;
   };
   const tab = v => tap(`nav.tabs button[data-view=${v}]`);
+  const list = async l => { await tab('list'); await tap(`.list-seg button[data-l=${l}]`); };
   const closeModal = async () => { if (await has('.modal-close')) await tap('.modal-close'); };
 
   async function dbState() {
@@ -65,6 +66,14 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
         }
       };
     }));
+  }
+  async function drawOnMap() {
+    const el = await page.$('#map-el'); if (!el || !(await has('#dr-save'))) return;
+    const bb = await el.boundingBox(); if (!bb) return;
+    const n = Math.floor(rnd() * 6);
+    for (let k = 0; k < n; k++) await page.mouse.click(bb.x + 60 + rnd() * (bb.width - 120), bb.y + 80 + rnd() * (bb.height - 200)).catch(() => {});
+    if (rnd() < 0.2) await tap('#dr-undo');
+    await tap(rnd() < 0.85 ? '#dr-save' : '#dr-cancel'); stats.drawn = (stats.drawn || 0) + 1;
   }
   async function checkInvariants(label) {
     const s = await dbState();
@@ -94,7 +103,7 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
   }
 
   const actions = [
-    [20, 'byt flik', async () => tab(pick(['id', 'obs', 'objects', 'map', 'more']))],
+    [20, 'byt flik', async () => tab(pick(['id', 'list', 'map', 'more']))],
     [8, 'välj artgrupp', async () => { await tab('id'); await tap(`.chip[data-g=${pick(['alla', 'trad', 'karlvaxt', 'mossa', 'lav', 'svamp', 'fagel'])}]`); }],
     [3, 'byt lista', async () => { await tab('id'); await tap(`#list-seg button[data-l=${pick(['urval', 'alla'])}]`); }],
     [6, 'fota', async () => {
@@ -111,7 +120,8 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
       await b.evaluate(e => e.scrollIntoView({ block: 'center' }));
       if (rnd() < 0.25) { const q = await b.$('.quick'); if (q) { await q.click().catch(() => {}); stats.saved++; return; } }
       await b.click().catch(() => {});
-      await tap(`#sv-status button[data-s=${pick(['sure', 'unsure', 'ai'])}]`);
+      if (rnd() < 0.3) await tap('#sv-unsure');
+      if (rnd() < 0.3) { await page.$eval('details.more', d => { d.open = true; }).catch(() => {}); await tap(`.chip-row[data-row=method] .chip[data-v="${pick(['Lupp', 'Okulärt i fält'])}"]`); }
       if (rnd() < 0.5) await tap(`.chip-row[data-row=sub-type] .chip[data-v="${pick(['Låga', 'Levande träd', 'Torraka'])}"]`);
       if (rnd() < 0.3) { await page.$eval('details.more', d => { d.open = true; }).catch(() => {}); await page.fill('#sv-count', String(Math.floor(rnd() * 50))).catch(() => {}); }
       if (rnd() < 0.15) { await tap('#sv-change'); await page.fill('#sp-q', pick(QUERIES)).catch(() => {}); await tap('#sp-list li[data-id]'); }
@@ -133,33 +143,37 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
     [2, 'ta bort foto', async () => tap('.thumb .x')],
     [2, 'börja om', async () => tap('#btn-clear')],
     [5, 'snabbfynd via sök', async () => {
-      await closeModal(); await tab('id'); if (!(await tap('#btn-known'))) return;
-      await page.fill('#sp-q', pick(QUERIES)).catch(() => {});
-      if (await has('#sp-list li[data-id]') && rnd() < 0.85) {
-        await tap('#sp-list li[data-id]');
-        if (rnd() < 0.9) { await tap('#sv-save'); stats.saved++; }
-      } else await closeModal();
+      await closeModal(); await tab('id'); if (!(await tap('#act-art'))) return;
+      await page.fill('#cl-q', pick(QUERIES)).catch(() => {});
+      const it = await page.$$('.cl-item');
+      if (it.length && rnd() < 0.85) { await pick(it.slice(0, 8)).click().catch(() => {}); stats.saved++; if (await has('.modal-bg.sub')) await tap('#rg-save'); }
+      await closeModal();
     }],
     [5, 'öppna fynd', async () => {
-      await tab('obs'); await closeModal(); const items = await page.$$('#view-obs .obs'); if (!items.length) return;
+      await list('fynd'); await closeModal(); const items = await page.$$('#view-obs .obs'); if (!items.length) return;
       await pick(items).click().catch(() => {}); await page.waitForTimeout(100);
       const u = rnd();
-      if (u < 0.35) { if (await tap('#od-edit')) { if (rnd() < .3) await tap('#sv-repos'); await tap('#sv-save'); } }
+      if (u < 0.35) { if (await tap('#od-edit')) { if (rnd() < .3) await tap('#sv-repos'); if (!(await tap('#sv-save'))) await tap('#pt-save'); } }
+      else if (u < 0.42) { if (await tap('#od-det')) { await page.fill('#sp-q', pick(QUERIES)).catch(() => {}); if (await tap('#sp-list li[data-id]')) await tap('#sv-save'); } }
       else if (u < 0.55) { if (await tap('#od-del')) stats.deleted++; }
       else await closeModal();
     }],
-    [3, 'filtrera fynd', async () => { await tab('obs'); await tap(`.seg button[data-f=${pick(['alla', 'rl', 'sig'])}]`); }],
+    [3, 'filtrera fynd', async () => { await list('fynd'); await tap(`.seg button[data-f=${pick(['alla', 'rl', 'sig'])}]`); }],
     [6, 'gå i skogen (GPS)', async () => {
       pos = { lat: pos.lat + (rnd() - .5) * 0.0008, lon: pos.lon + (rnd() - .5) * 0.0016 };
       await ctx.setGeolocation({ latitude: pos.lat, longitude: pos.lon, accuracy: pick([3, 5, 8, 15, 40, 120]) });
     }],
     [3, 'nytt/ändra objekt', async () => {
-      await tab('objects'); await closeModal();
-      const items = await page.$$('[data-open]');
-      if (items.length && rnd() < 0.4) await pick(items).click().catch(() => {}); else if (!(await tap('#btn-newobj'))) return;
+      await closeModal();
+      let items = [];
+      if (rnd() < 0.5) { await list('obj'); items = await page.$$('[data-open]'); } else { await tab('id'); if (!(await tap('#act-obj'))) return; }
+      if (items.length && rnd() < 0.4) await pick(items).click().catch(() => {}); else if (items.length && !(await tap('#btn-newobj'))) return;
+      if (rnd() < 0.1) { await tap('#ob-office'); await page.waitForTimeout(100); }
       if (!(await has('#ob-done'))) return;
       await tap('#ob-tabs button[data-t=avgr]');
       if (rnd() < 0.15) { await tap('#ob-track'); return; }
+      if (rnd() < 0.15) { await tap('#ob-drawmap'); await page.waitForTimeout(400); await drawOnMap(); return; }
+      await page.$$eval('details.more', ds => ds.forEach(d => { d.open = true; })).catch(() => {});
       for (let k = 0; k < 2 + Math.floor(rnd() * 6); k++) {
         pos = { lat: pos.lat + (rnd() - .5) * 0.0006, lon: pos.lon + (rnd() - .5) * 0.0012 };
         await ctx.setGeolocation({ latitude: pos.lat, longitude: pos.lon, accuracy: pick([4, 6, 10]) });
@@ -184,9 +198,9 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
       else await page.goBack();
     }],
     [5, 'checklista', async () => {
-      await closeModal(); await tab('objects');
-      const b = await page.$$('[data-cl]'); if (!b.length) return;
-      await pick(b).click().catch(() => {}); await page.waitForSelector('.cl-item', { timeout: 3000 }).catch(() => {});
+      await closeModal();
+      if (rnd() < 0.5) { await list('obj'); const b = await page.$$('[data-cl]'); if (!b.length) return; await pick(b).click().catch(() => {}); }
+      else { await tab('id'); if (!(await tap('#act-art'))) return; } await page.waitForSelector('.cl-item', { timeout: 3000 }).catch(() => {});
       for (let k = 0; k < 1 + Math.floor(rnd() * 5); k++) {
         const u = rnd();
         if (u < 0.2) await tap(`#cl-groups .chip[data-g=${pick(['alla', 'mossa', 'lav', 'svamp', 'insekt', 'karlvaxt'])}]`);
@@ -205,17 +219,33 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
       await closeModal();
     }],
     [1, 'ändra uppdrag', async () => {
-      await closeModal(); await tab('objects'); if (!(await tap('#btn-project'))) return;
+      await closeModal(); await tab('more'); if (!(await tap('#btn-project'))) return;
       await page.fill('#pr-name', pick(['NVI Granåsen', 'Detaljplan Norr', ''])).catch(() => {});
       await tap('.chip[data-a="Naturvärdesklass 4"]'); await tap(rnd() < .8 ? '#pr-save' : '.modal-close');
     }],
     [3, 'bakåtknapp', async () => { await page.goBack().catch(() => {}); await page.waitForTimeout(150); await ensureInApp(); }],
     [2, 'senast registrerat', async () => { await closeModal(); await tab('id'); const c = await page.$$('.recent-chip'); if (c.length) { await pick(c).click().catch(() => {}); stats.saved++; } }],
     [1, 'stoppa inspelning', async () => tap('#rec-stop')],
-    [1, 'avsluta aktivt objekt', async () => tap('#ab-x')],
-    [1, 'aktivt objekt → checklista', async () => { if (await tap('#ab-cl')) { const it = await page.$$('.cl-item'); if (it.length) await pick(it.slice(0, 8)).click().catch(() => {}); await page.goBack().catch(() => {}); } }],
-    [2, 'tryck på kartpunkt', async () => { await tab('map'); const pts = await page.$$('.pt'); if (pts.length) { await pick(pts).click({ force: true }).catch(() => {}); await closeModal(); } }],
-    [2, 'inställningar', async () => { await tab('more'); await tap(pick(['#set-prot', '#set-acc'])); if (rnd() < .3) await page.selectOption('#set-theme', pick(['auto', 'light', 'dark'])).catch(() => {}); }],
+    [3, 'punkt/anteckning', async () => {
+      await closeModal(); await tab('id'); if (!(await tap('#act-note'))) return;
+      if (rnd() < 0.7) await tap('#pt-fav .chip'); if (rnd() < 0.4) await page.fill('#pt-text', pick(['Grov låga', '<b>x</b>', 'Åäö; "citat"', ''])).catch(() => {});
+      if (rnd() < 0.2) await page.setInputFiles('#pt-cam', pick(images)).catch(() => {});
+      await page.waitForTimeout(150); if (rnd() < 0.85) { await tap('#pt-save'); stats.saved++; } else await tap('#pt-cancel');
+    }],
+    [2, 'spara obestämd', async () => { if (await tap('#btn-indet')) { await tap('#sv-save'); stats.saved++; } }],
+    [1, 'du är i → objektkort', async () => { await closeModal(); await tab('id'); await tap('#here'); await page.waitForTimeout(100); await tap('#ob-done'); }],
+    [2, 'tryck på kartan', async () => {
+      await closeModal(); await tab('map'); await page.waitForTimeout(150);
+      const pts = await page.$$('#map-el path.leaflet-interactive'); if (pts.length) { await pick(pts).click({ force: true }).catch(() => {}); await page.waitForTimeout(100); await closeModal(); }
+      if (rnd() < 0.3) await tap(pick(['#mp-me', '#mp-fit']));
+    }],
+    [1, 'kartlager', async () => {
+      await closeModal(); await tab('map'); if (!(await tap('#mp-layers'))) return;
+      if (rnd() < 0.5) await tap(`input[name=ly-base][value=${pick(['osm', 'none', 'lmtopo', 'osm'])}]`);
+      if (rnd() < 0.5) await tap('.ly-ov'); if (rnd() < 0.3) await tap('#ly-track');
+      await closeModal();
+    }],
+    [2, 'inställningar', async () => { await tab('more'); await page.$eval('details.more-files', d => { d.open = true; }).catch(() => {}); await tap(pick(['#set-prot', '#set-acc', '#set-office'])); if (rnd() < .3) await page.selectOption('#set-theme', pick(['auto', 'light', 'dark'])).catch(() => {}); }],
     [2, 'export + kontroll', async () => {
       await closeModal(); await tab('more'); await page.waitForSelector('#ex-delivery');
       const protectOn = await page.$eval('#set-prot', e => e.checked).catch(() => true);

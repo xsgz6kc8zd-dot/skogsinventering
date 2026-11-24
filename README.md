@@ -10,6 +10,24 @@ till exempel:
 Fynden sparas med GPS-position (WGS84 + SWEREF 99 TM), foton, antal och substrat, och kan
 kopplas till naturvärdesobjekt. Allt exporteras till GeoJSON (QGIS/ArcGIS), CSV (Excel) och en full säkerhetskopia.
 
+## Så är appen upplagd (version 2.0)
+
+Fyra flikar: **Fält · Karta · Lista · Mer**. Upplägget bygger på en granskning av en fältexpert med bakgrund som virkesköpare, skogstekniker och biolog, se [`FALTEXPERT.md`](FALTEXPERT.md).
+
+- **Fält** (startsida): raden "Du är i *objekt*" och fyra knappar.
+  - **Art**: känd art med ett tryck.
+  - **Foto**: okänd art. AI-förslag om AI är nedladdad, annars sparas fotot som obestämt och bestäms senare.
+  - **Objekt**: ny avgränsning genom att gå gränsen eller rita på kartan.
+  - **Punkt**: anteckning eller foto, till exempel grov låga, hålträd eller kulturlämning.
+- **Fynd kopplas automatiskt** till objektet de ligger i. När en avgränsning ändras kopplas fynden om, utom de du själv har kopplat.
+- **Objektkortet** visar i **fältläge** bara det som behövs ute: avgränsning, biotop, strukturer, foton, anteckningar och preliminär klass. **Kontorsläget** visar alla rapportfält: motiveringar, Natura 2000, biotopskydd, skötsel och bedömningsmatris.
+- **Karta** (Leaflet):
+  - OpenStreetMap när du har nät.
+  - Lantmäteriets topografiska webbkarta med egen gratis API-nyckel, som kan laddas ner per område för offline.
+  - Skogsstyrelsens öppna lager: nyckelbiotoper, naturvärden, sumpskog, avverkningsanmälningar, biotopskydd, naturvårdsavtal och skoghistoria. Lagren hämtas som kartbild online och kan laddas ner som vektordata för offline.
+  - Rita och justera objekt direkt på kartan, och se ditt spår från det senaste dygnet.
+- **AI-artbestämning är valfri** (Mer → AI, ≈105 MB).
+
 ## Funktioner
 
 | | |
@@ -18,11 +36,11 @@ kopplas till naturvärdesobjekt. Allt exporteras till GeoJSON (QGIS/ArcGIS), CSV
 | **Flera foton per fynd** | Närbild och översikt vägs ihop till ett säkrare svar. Bilderna kan beskäras. |
 | **Artdatabas** | 3 659 arter: ett skogsurval på 756 (alla Skogsstyrelsens signalarter och E-arter plus vanliga förväxlingsarter) och alla rödlistade växter, mossor, lavar, svampar och fåglar. Rödlistan 2025 och svenska namn från Dyntaxa (SLU Artdatabanken). Signalarter enligt **Skogsstyrelsens förteckning 2023-1, importerad maskinellt** och matchad på Dyntaxas taxon-ID. |
 | **Artgruppsfilter** | Väljer du "Mossor" jämförs bara mossor, vilket ger bättre träffsäkerhet och rimligare procent. |
-| **Fynd** | GPS med noggrannhet, SWEREF 99 TM, mängdklass, antal/enhet, substrat som snabbval (trädslag, typ, diameter, nedbrytning – senaste val förvalt), bestämningsmetod, osäker bestämning, objektkoppling (aktivt objekt förvalt). AI-förslagen och eventuella rättelser sparas också. |
+| **Fynd** | GPS med noggrannhet, SWEREF 99 TM, mängdklass, antal/enhet, substrat som snabbval (trädslag, typ, diameter, nedbrytning – senaste val förvalt), bestämningsmetod, osäker bestämning, objektkoppling efter läget (det objekt du står i). AI-förslagen och eventuella rättelser sparas också. |
 | **Uppdrag** | Beställare, inventerare, SS 199000:2023/2014, detaljeringsgrad och tillägg. Klass 4 föreslås bara när tillägget ingår. |
-| **Checklista per objekt** | Stora knappar med objektets naturvårdsarter. Ett tryck registrerar arten med GPS ("okulärt i fält"), och det går att ångra direkt. Ett tryck till öppnar mängd, substrat och ny lokal. Sökningen täcker alla arter. |
+| **Art / checklista** | Stora knappar med objektets naturvårdsarter. Ett tryck registrerar arten med GPS ("okulärt i fält"), och det går att ångra direkt. Ett tryck till öppnar mängd, substrat och ny lokal. Sökningen täcker alla arter. |
 | **Naturvärdesobjekt** | Avgränsning genom att gå runt objektet (GPS-hörn eller automatisk spårinspelning), area, strukturer/värdeelement, biotop- och artvärde med förslag på naturvärdesklass enligt bedömningsmatrisen (SS 199000). |
-| **Karta** | Fynd och objekt i SWEREF 99 TM, offline (utan bakgrundskarta). |
+| **Karta** | OpenStreetMap (online), Lantmäteriets topografiska karta med egen nyckel (kan laddas ner för offline), Skogsstyrelsens lager, ritning av objekt, spårlogg. Fynd och objekt syns även utan bakgrund. |
 | **Objektprotokoll** | Natura 2000-naturtyp, generellt biotopskydd, nyckelbiotop, grupperade strukturer, påverkan, foton på objektet, motivering av biotop- och artvärde, osäkerhet i klassningen, skötselbehov/hot. Osäkra fynd och DD-arter räknas inte som naturvårdsarter. |
 | **Export** | GeoJSON, fynd-CSV och objektprotokoll-CSV (SWEREF 99 TM, semikolon + BOM för svensk Excel), **rapportunderlag** (HTML att skriva ut eller spara som PDF) och ZIP med allt inklusive foton (kan återställas). Skyddsklassade arter skyddas, se nedan. |
 | **Skyddsklassade arter** | Enligt SLU Artdatabankens lista över nationellt skyddsklassade arter (2023, importerad maskinellt): i exporter visas positionen som 5/25/50 km-ruta i SWEREF 99 TM, datum som år, och kommentar, substrat och objekt döljs. Arterna namnges inte per objekt eller i rapporten utan redovisas i en separat **konfidentiell bilaga**. För fåglar gäller skyddet fynd som kan indikera häckning (H). Bara fynd med aktiviteten "förbiflygande/sträckande" undantas, så fynd utan angiven aktivitet skyddas också. Regionala villkor (t.ex. guckusko) visas men tillämpas försiktigt, alltså alltid. |
@@ -57,6 +75,7 @@ eftersom vanliga förväxlingsarter är så mycket vanligare. Rödlistade arter 
 ## Dokument
 
 - [`PUBLICERA-OCH-TESTA.md`](PUBLICERA-OCH-TESTA.md): publicera (Netlify Drop / GitHub Pages), installera på telefonen och testplan för fältdag.
+- [`FALTEXPERT.md`](FALTEXPERT.md): fältexpertens förenklingsförslag (virkesköpare, skogstekniker, biolog), som ligger till grund för version 2.0.
 - [`EXPERTGRANSKNING.md`](EXPERTGRANSKNING.md): granskning av en skoglig naturvärdesinventerare.
 - [`UX-GRANSKNING.md`](UX-GRANSKNING.md) och [`UX-ATGARDER.md`](UX-ATGARDER.md): granskning av användbarheten i fält och vad som har åtgärdats, med mätvärden före och efter.
 - [`tools/SIMULATION_ID.md`](tools/SIMULATION_ID.md) och [`tools/SIMULATION_UI.md`](tools/SIMULATION_UI.md): simuleringar.
@@ -67,7 +86,7 @@ Appen måste serveras över **HTTPS**. Det krävs för kamera, GPS och offlinel�
 
 1. Lägg mappen `app/` på valfri statisk webbhost, till exempel GitHub Pages, Netlify eller en egen server.
 2. Öppna sidan i mobilen. Lägg till på hemskärmen (iOS: *Dela → Lägg till på hemskärmen*, Android: *Installera app*).
-3. Gå till **Mer → Ladda ner för offlinebruk** när du har wifi (≈105 MB).
+3. Valfritt: **Mer → AI-artbestämning → Ladda ner** när du har wifi (≈105 MB). Ladda också ner kartan för området (Karta → ▤) om du vill ha bakgrundskarta offline.
 4. Klart. Appen fungerar sedan utan täckning.
 
 Lokalt för test (localhost räknas som säkert):
@@ -125,3 +144,5 @@ och höj `VERSION` i `app/sw.js`.
 - Skogsstyrelsen 2023. Komplett förteckning över Skogsstyrelsens signalarter, version 2023-1
 - SLU Artdatabanken: List of Restricted Access Species In Sweden (CC0, via GBIF Sverige) och "Nationellt skyddsklassade arter" (2023-06-12, uppdaterad 2024-04-25)
 - onnxruntime-web 1.30.0, Microsoft, MIT-licens
+- Leaflet 1.9.4, BSD-2-licens
+- Kartdata © OpenStreetMap-bidragsgivare (ODbL); Lantmäteriets topografiska webbkarta (CC BY 4.0, egen nyckel); Skogsstyrelsens geodata (öppna data)

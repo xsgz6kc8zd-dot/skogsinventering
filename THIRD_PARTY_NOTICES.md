@@ -31,3 +31,10 @@ MIT-licensen (gäller båda komponenterna ovan, med respektive upphovsrättsinne
 - **Signalarter**: Skogsstyrelsen (2023). *Komplett förteckning över Skogsstyrelsens signalarter, version 2023-1.*
   Listan har importerats maskinellt till `tools/signalarter_2023_1.csv` med angiven källa.
 - **GBIF Backbone Taxonomy**: engelska namn och klassificering för modellens textbeskrivningar.
+
+## Karta
+
+- **Leaflet 1.9.4** (`app/vendor/leaflet/`), © Volodymyr Agafonkin och bidragsgivare, BSD 2-Clause-licens. Licenstexten finns i `app/vendor/leaflet/LICENSE`.
+- **OpenStreetMap**: kartplattor från tile.openstreetmap.org, © OpenStreetMap-bidragsgivare (ODbL). Plattorna visas bara online och laddas aldrig ner i förväg, enligt OSM:s regler för plattanvändning.
+- **Lantmäteriet**: den topografiska webbkartan (CC BY 4.0) används bara med användarens egen API-nyckel.
+- **Skogsstyrelsen**: lagren hämtas från Geodataportalens öppna karttjänster.

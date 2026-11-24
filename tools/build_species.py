@@ -27,6 +27,16 @@ RL_CODE = {"REGIONALLY_EXTINCT": "RE", "CRITICALLY_ENDANGERED": "CR", "ENDANGERE
 LICHEN_CLASSES = {"Lecanoromycetes", "Arthoniomycetes", "Lichinomycetes", "Coniocybomycetes",
                   "Candelariomycetes"}
 LICHEN_ORDERS = {"Verrucariales", "Pyrenulales"}
+SYNTHETIC = [
+    ("lav", "Lichenes indet.", "obestämd lav", ["Fungi", "Ascomycota", "Lecanoromycetes", "", "", "lichen"]),
+    ("mossa", "Bryophyta indet.", "obestämd mossa", ["Plantae", "Bryophyta", "", "", "", "moss"]),
+    ("svamp", "Fungi indet.", "obestämd svamp", ["Fungi", "", "", "", "", "fungus"]),
+    ("karlvaxt", "Tracheophyta indet.", "obestämd kärlväxt", ["Plantae", "Tracheophyta", "", "", "", "plant"]),
+    ("trad", "Arbor indet.", "obestämt träd", ["Plantae", "Tracheophyta", "", "", "", "tree"]),
+    ("fagel", "Aves indet.", "obestämd fågel", ["Animalia", "Chordata", "Aves", "", "", "bird"]),
+    ("insekt", "Insecta indet.", "obestämd insekt", ["Animalia", "Arthropoda", "Insecta", "", "", "insect"]),
+    ("punkt", "Anteckning", "anteckning", ["", "", "", "", "", "note"]),
+]
 SKS_GROUP = {"Insekter": "insekt", "Kärlväxter": "karlvaxt", "Mossor": "mossa", "Lavar": "lav", "Svampar": "svamp"}
 EXCLUDED_PHYLA = {"Rhodophyta", "Chlorophyta", "Charophyta", "Ochrophyta", "Gyrista", "Cyanobacteria"}
 
@@ -199,6 +209,11 @@ def main():
         if r["endast_hackning"] == "True": sp["skH"] = 1
         if r["regional"] == "True" or r["begransning"]: sp["skR"] = r["begransning"]
         species.append(sp)
+
+    # Syntetiska poster: "obestämd" per artgrupp (bestäms senare) och fri anteckningspunkt.
+    # Flaggan syn gör att de aldrig föreslås av AI:n eller räknas som naturvårdsarter.
+    for g, sci, sv, tax in SYNTHETIC:
+        species.append(dict(sci=sci, sv=sv, grp=g, sig="", rl="", en="", dyntaxa="", sel=0, tax=tax, syn="note" if g == "punkt" else "indet"))
 
     for i, s in enumerate(species):
         s["id"] = i
