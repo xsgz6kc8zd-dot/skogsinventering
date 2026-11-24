@@ -1,0 +1,204 @@
+taxon_id;sci;sv;rank;klass;km;endast_hackning;regional;begransning;klass_class;grupp
+266815;Falco peregrinus/rusticolus;pilgrimsfalk/jaktfalk;speciesAggregate;5;50;True;False;;Aves;
+100055;Falco rusticolus;jaktfalk;species;5;50;True;False;H + alla fynd i fjällen samt övriga fynd mars-aug i Norrland och Älvdalens kn (Dr);Aves;Fåglar
+267302;Falco rusticolus, white morph;jaktfalk, vit morf;unranked;5;50;True;False;;Aves;
+267303;Falco rusticolus, dark morph;jaktfalk, mörk morf;unranked;5;50;True;False;;Aves;
+267320;Canis lupus;varg [inkl. hund];species;5;50;False;False;;Mammalia;
+100024;Canis lupus lupus;eurasiatisk skogsvarg;subspecies;5;50;False;False;;Mammalia;Däggdjur
+100093;Bubo scandiacus;fjälluggla;species;5;50;True;False;H + alla fynd i fjällen hela året;Aves;Fåglar
+100008;Anser erythropus;fjällgås;species;5;50;True;False;H + alla fynd i Tjålmejaure-Laisdalen samt inom ett avgränsat område i Gällivarefjällen (Nb);Aves;Fåglar
+100054;Falco peregrinus;pilgrimsfalk;species;5;50;True;False;H + alla fynd i fjällen hela året;Aves;Fåglar
+100066;Gulo gulo;järv;species;5;50;False;False;;Mammalia;Däggdjur
+233903;Falco peregrinus peregrinus;pilgrimsfalk, underarten peregrinus;subspecies;5;50;True;False;;Aves;
+205543;Circus macrourus;stäpphök;species;4;25;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+266811;Circus macrourus/pygargus;stäpphök/ängshök;speciesAggregate;4;25;True;False;;Aves;
+266813;Clanga pomarina/clanga;mindre skrikörn/större skrikörn;speciesAggregate;4;25;True;False;;Aves;
+267103;Aquila chrysaetos/Haliaeetus albicilla;kungsörn/havsörn;speciesAggregate;4;25;True;False;;Aves;
+100046;Dendrocopos leucotos;vitryggig hackspett;species;4;25;True;False;H + övriga fynd febr-juni samt i vissa områden året runt, se fliken Begränsningar&tillägg;Aves;Fåglar
+267107;Dendrocopos leucotos x major;vitryggig hackspett x större hackspett;species;4;25;True;False;;Aves;
+1248;Platanthera obtusata;lappfela;species;4;25;False;False;;Liliopsida;Kärlväxter
+1128;Orobanche purpurea;röllikesnyltrot;species;4;25;False;False;;Magnoliopsida;Kärlväxter
+1085;Gymnadenia nigra;brunkulla;species;3;25;False;False;;Liliopsida;Kärlväxter
+975;Pseudorchis albida;vityxne;species;3;25;False;False;;Liliopsida;Kärlväxter
+100005;Vulpes lagopus;fjällräv;species;4;25;False;False;;Mammalia;Däggdjur
+100011;Aquila chrysaetos;kungsörn;species;4;25;True;False;H + adulta fåglar samt ägg, pulli eller årsunge (1K) 15/2-31/8, även alla fynd på Öl 15/1-31/8;Aves;Fåglar
+100020;Bubo bubo;berguv;species;4;25;True;False;H + alla fynd 1/2 - 31/7 (med undantag av visningslokaler);Aves;Fåglar
+100032;Ciconia nigra;svart stork;species;4;25;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+100035;Circus pygargus;ängshök;species;4;25;True;False;H + alla fynd 15/5-15/8 på Öl utom i Ottenbyområdet och utom sträckande fynd;Aves;Fåglar
+100039;Coracias garrulus;blåkråka;species;4;25;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+100057;Lynx lynx;lo;species;4;25;False;False;;Mammalia;Däggdjur
+100067;Haliaeetus albicilla;havsörn;species;4;25;True;False;H + ägg, pulli eller årsunge (1K) 15/2-31/8 samt i Sk även adulta fåglar 15/2-31/8;Aves;Fåglar
+223612;Gymnadenia conopsea × Pseudorchis albida;brudsporre × vityxne;species;4;25;False;False;;Liliopsida;
+223622;Platanthera obtusata subsp. oligantha;lappfela;subspecies;4;25;False;False;;Liliopsida;
+100142;Tyto alba;tornuggla;species;4;25;True;False;H + alla fynd 15/2-15/8 samt under hela året på Öl och Go.;Aves;Fåglar
+100145;Ursus arctos;brunbjörn;species;4;25;False;False;;Mammalia;Däggdjur
+103061;Clanga clanga;större skrikörn;species;4;25;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+233901;Aquila chrysaetos chrysaetos;kungsörn, underarten chrysaetos;subspecies;4;25;True;False;;Aves;
+233955;Tyto alba alba;ljusbröstad tornuggla;subspecies;4;25;True;False;;Aves;
+233956;Tyto alba guttata;mörkbröstad tornuggla;subspecies;4;25;True;False;;Aves;
+233958;Bubo bubo bubo;berguv, underarten bubo;subspecies;4;25;True;False;;Aves;
+233975;Coracias garrulus garrulus;blåkråka, underarten garrulus;subspecies;4;25;True;False;;Aves;
+233982;Dendrocopos leucotos leucotos;vitryggig hackspett, underarten leucotos;subspecies;4;25;True;False;;Aves;
+101300;Melitaea britomartis;veronikanätfjäril;species;4;25;False;False;;Insecta;Fjärilar
+103071;Merops apiaster;biätare;species;4;25;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+6008221;Ursus arctos arctos;europeisk brunbjörn;subspecies;4;25;False;False;;Mammalia;
+6051140;Circus pygargus, dark morph;ängshök, mörk morf;unranked;4;25;True;False;;Aves;
+266809;Circus macrourus x cyaneus;stäpphök x blå kärrhök;species;3;5;True;False;;Aves;
+266810;Circus macrourus/cyaneus;stäpphök/blå kärrhök;speciesAggregate;3;5;True;False;;Aves;
+266851;Strix uralensis/nebulosa;slaguggla/lappuggla;speciesAggregate;3;5;True;False;;Aves;
+223593;Dactylorhiza maculata subsp. fuchsii × Gymnadenia odoratissima;skogsnycklar × luktsporre;species;3;5;False;False;;Liliopsida;
+103060;Milvus migrans;brun glada;species;3;5;True;False;H + alla fynd i delar av Vg 1/5-31/8;Aves;Fåglar
+100009;Anser fabalis;sädgås;species;3;5;True;False;H;Aves;Fåglar
+232126;Anser fabalis fabalis (staging);tajgasädgås (rastande);species;3;5;True;False;;Aves;
+232125;Anser fabalis fabalis;tajgasädgås;subspecies;3;5;True;False;;Aves;
+232147;Menegazzia subsimilis;atlantisk hållav;species;3;5;False;False;;Lecanoromycetes;Lavar
+100082;Milvus milvus;röd glada;species;3;5;True;False;H;Aves;Fåglar
+267102;Milvus milvus x migrans;röd glada x brun glada;species;3;5;True;False;;Aves;
+100533;Calosoma auropunctatum;hedlarvmördare;species;3;5;False;False;;Insecta;Skalbaggar
+1269;Polystichum braunii;skuggbräken;species;3;5;False;False;;Polypodiopsida;Kärlväxter
+1228;Asplenium scolopendrium;hjorttunga;species;3;5;False;False;;Polypodiopsida;Kärlväxter
+1155;Nevesia sampaiana;kastanjegytterlav;species;3;5;False;False;;Lecanoromycetes;Lavar
+1122;Orchis spitzelii;alpnycklar;species;3;5;False;False;;Liliopsida;Kärlväxter
+1056;Malaxis monophyllos;knottblomster;species;3;5;False;True;Gäller endast i Götaland, visas öppet i Svealand och Norrland;Liliopsida;Kärlväxter
+984;Lobaria hallii;hårig skrovellav;species;3;5;False;False;;Lecanoromycetes;Lavar
+983;Lobaria amplissima;jättelav;species;3;5;False;False;;Lecanoromycetes;Lavar
+1006378;Liparis;gulyxnen;genus;3;5;False;False;;Liliopsida;
+980;Liparis loeselii;gulyxne;species;3;5;False;True;Gäller endast i Götaland, visas öppet i Svealand och Norrland;Liliopsida;Kärlväxter
+6308;Tuber mesentericum;bagnolitryffel;species;3;5;False;False;;Pezizomycetes;Storsvampar
+743;Gymnadenia runei;brudkulla;species;3;5;False;False;;Liliopsida;Kärlväxter
+742;Gymnadenia odoratissima;luktsporre;species;3;5;False;False;;Liliopsida;
+638;Evernia illyrica;grå ringlav;species;3;5;False;False;;Lecanoromycetes;Lavar
+622;Erioderma pedicellatum;värmlandslav;species;3;5;False;False;;Lecanoromycetes;Lavar
+1005683;Epipogium;skogsfrur;genus;3;5;False;False;;Liliopsida;
+620;Epipogium aphyllum;skogsfru;species;3;5;False;True;Gäller endast i Götaland och Svealand, visas öppet i Norrland;Liliopsida;Kärlväxter
+619;Epipactis phyllanthes;kal knipprot;species;3;5;False;False;;Liliopsida;Kärlväxter
+1006448;Cypripedium;guckuskor;genus;3;5;False;False;;Liliopsida;
+504;Cypripedium calceolus;guckusko;species;3;5;False;True;Gäller endast i Götaland samt Södermanlands län, visas öppet i övriga Svealand och Norrland;Liliopsida;Kärlväxter
+100001;Accipiter gentilis;duvhök;species;3;5;True;False;H;Aves;Fåglar
+100004;Alcedo atthis;kungsfiskare;species;3;5;True;False;H + alla fynd i delar av Vr 1/1-15/8;Aves;Fåglar
+100027;Charadrius alexandrinus;svartbent strandpipare;species;3;5;True;False;;Aves;
+100034;Circus cyaneus;blå kärrhök;species;3;5;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+100047;Dendrocopos medius;mellanspett;species;3;5;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+100061;Gallinago media;dubbelbeckasin;species;3;5;True;False;;Aves;
+100063;Gavia stellata;smålom;species;3;5;True;False;H;Aves;Fåglar
+290;Cephalanthera rubra;röd skogslilja;species;3;5;False;False;;Liliopsida;
+223571;Cephalanthera longifolia × rubra;hybridskogslilja;species;3;5;False;False;;Liliopsida;
+514;Dactylorhiza majalis subsp. majalis;majnycklar;subspecies;3;5;False;False;;Liliopsida;
+223583;Dactylorhiza incarnata var. incarnata × majalis subsp. majalis;äkta ängsnycklar × majnycklar;species;3;5;False;False;;Liliopsida;
+223594;Dactylorhiza maculata subsp. fuchsii × majalis subsp. majalis;skogsnycklar × majnycklar;species;3;5;False;False;;Liliopsida;
+223599;Dactylorhiza maculata subsp. maculata × majalis subsp. majalis;Jungfru Marie nycklar × majnycklar;species;3;5;False;False;;Liliopsida;
+223608;Epipactis atrorubens × phyllanthes;purpurknipprot × kal knipprot;species;3;5;False;False;;Liliopsida;
+223610;Gymnadenia conopsea × odoratissima;brudsporre × luktsporre;species;3;5;False;False;;Liliopsida;
+223618;Orchis mascula × spitzelii;Sankt Pers nycklar × alpnycklar;species;3;5;False;False;;Liliopsida;
+386;Arctomia fascicularis;kuddgelélav;species;3;5;False;False;;Lecanoromycetes;Lavar
+339;Chenopodium vulvaria;stinkmålla;species;3;5;False;False;;Magnoliopsida;
+305;Cetrelia olivetorum s.lat.;jättesköldlav;speciesAggregate;3;5;False;False;;Lecanoromycetes;
+304;Asplenium ceterach;mjältbräken;species;3;5;False;False;;Polypodiopsida;Kärlväxter
+289;Cephalanthera damasonium;stor skogslilja;species;3;5;False;False;;Liliopsida;Kärlväxter
+1006537;Calypso;nornor;genus;3;5;False;False;;Liliopsida;
+233;Calypso bulbosa;norna;species;3;5;False;False;;Liliopsida;
+216;Calicium lenticulare;skuggspiklav;species;3;5;False;False;;Lecanoromycetes;
+100075;Limosa lapponica;myrspov;species;3;5;True;False;H;Aves;Fåglar
+100085;Myotis bechsteinii;Bechsteins fladdermus;species;3;5;False;False;Alla fynd i Ignaberga sn (Sk) samt på Övervintringsplats etc, se flik Begränsningar & tillägg;Mammalia;Däggdjur
+100096;Pandion haliaetus;fiskgjuse;species;3;5;True;False;H;Aves;Fåglar
+100100;Pernis apivorus;bivråk;species;3;5;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+100136;Strix nebulosa;lappuggla;species;3;5;True;False;H + alla fynd i Sk resp. i delar av Up 15/2-15/8;Aves;Fåglar
+100137;Strix uralensis;slaguggla;species;3;5;True;False;H: ropande ugglor döljs normalt men inte i Up;Aves;Fåglar
+100138;Tetrao urogallus;tjäder;species;3;5;True;False;H;Aves;Fåglar
+100143;Upupa epops;härfågel;species;3;5;True;False;H + alla fynd på Öl 1/4-31/8 utom i Ottenbyområdet - fynd visas öppet efter 5 år;Aves;Fåglar
+100265;Ampedus nigerrimus;blanksvart rödrock;species;3;5;False;False;;Insecta;Skalbaggar
+187;Bryoria smithii;stiftbroktagel;species;3;5;False;False;;Lecanoromycetes;Lavar
+168;Botrychium simplex;dvärglåsbräken;species;3;5;False;False;;Psilotopsida;Kärlväxter
+111;Asplenium adulterinum;brunbräken;species;3;5;False;False;;Polypodiopsida;Kärlväxter
+49;Anacamptis pyramidalis;salepsrot;species;3;5;False;False;;Liliopsida;
+1345;Geastrum flexuosum;jordstjärnstryffel;species;3;5;False;False;;Agaricomycetes;Storsvampar
+1366;Ranunculus ophioglossifolius;gotlandsranunkel;species;3;5;False;False;;Magnoliopsida;Kärlväxter
+1532;Stereocaulon delisei;bohuspåskrislav;species;3;5;False;False;;Lecanoromycetes;Lavar
+1533;Stereocaulon incrustatum;grynig påskrislav;species;3;5;False;False;;Lecanoromycetes;Lavar
+1534;Sticta fuliginoides;stiftärrlav;species;3;5;False;False;;Lecanoromycetes;Lavar
+1535;Sticta limbata;grynig ärrlav;species;3;5;False;False;;Lecanoromycetes;Lavar
+1536;Sticta sylvatica;ärrlav;species;3;5;False;False;;Lecanoromycetes;Lavar
+1608;Tuber aestivum;sommartryffel;species;3;5;False;False;;Pezizomycetes;Storsvampar
+100534;Callisthenes reticulatus;alvarlarvmördare;species;3;5;False;False;;Insecta;Skalbaggar
+100543;Cardiophorus gramineus;ekhjärtknäppare;species;3;5;False;False;;Insecta;Skalbaggar
+100571;Cerambyx cerdo;större ekbock;species;3;5;False;False;;Insecta;
+100606;Chalcophora mariana;jättepraktbagge;species;3;5;False;False;;Insecta;Skalbaggar
+224371;Viola alba × hirta;silverviol × buskviol;species;3;5;False;False;;Magnoliopsida;
+224372;Viola alba × odorata;silverviol × luktviol;species;3;5;False;False;;Magnoliopsida;
+106768;Sphecodes spinulosus;taggblodbi;species;3;5;False;False;;Insecta;Steklar
+1826;Pyrenula occidentalis;atlantisk vårtlav;species;3;5;False;False;;Eurotiomycetes;Lavar
+1834;Trapeliopsis viridescens;svartfruktig knotterlav;species;3;5;False;False;;Lecanoromycetes;Lavar
+1661;Viola alba;silverviol;species;3;5;False;False;;Magnoliopsida;
+1718;Anacamptis palustris;kärrnycklar;species;3;5;False;False;;Liliopsida;Kärlväxter
+224863;Asplenium adulterinum × trichomanes subsp. quadrivalens;brunbräken × kalksvartbräken;species;3;5;False;False;;Polypodiopsida;
+224864;Asplenium adulterinum × viride;brunbräken × grönbräken;species;3;5;False;False;;Polypodiopsida;
+101140;Ischnodes sanguinicollis;almknäppare;species;3;5;False;False;;Insecta;Skalbaggar
+101161;Lacon lepidopterus;skimlig fjällknäppare;species;3;5;False;False;;Insecta;Skalbaggar
+101162;Lacon querceus;ekfjällknäppare;species;3;5;False;False;;Insecta;Skalbaggar
+101257;Lytta vesicatoria;spansk fluga;species;3;5;False;False;;Insecta;
+233891;Milvus milvus milvus;röd glada, underarten milvus;subspecies;3;5;True;False;;Aves;
+233892;Milvus migrans migrans;brun glada, underarten migrans;subspecies;3;5;True;False;;Aves;
+233896;Circus cyaneus cyaneus;blå kärrhök, underarten cyaneus;subspecies;3;5;True;False;;Aves;
+233897;Accipiter gentilis gentilis;duvhök, underarten gentilis;subspecies;3;5;True;False;;Aves;
+102110;Buteo lagopus;fjällvråk;species;3;5;True;False;H: fynd nedanför fjällen visas öppet efter 5 år, i fjällen döljs de löpande;Aves;Fåglar
+233899;Buteo lagopus lagopus;fjällvråk, underarten lagopus;subspecies;3;5;True;False;;Aves;
+233902;Pandion haliaetus haliaetus;fiskgjuse, underarten haliaetus;subspecies;3;5;True;False;;Aves;
+102611;Falco columbarius;stenfalk;species;3;5;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+233905;Falco columbarius aesalon;stenfalk, underarten aesalon;subspecies;3;5;True;False;;Aves;
+102943;Falco subbuteo;lärkfalk;species;3;5;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+233906;Falco subbuteo subbuteo;lärkfalk, underarten subbuteo;subspecies;3;5;True;False;;Aves;
+233911;Tetrao urogallus urogallus;tjäder, underarten urogallus;subspecies;3;5;True;False;;Aves;
+233922;Limosa lapponica lapponica;myrspov, underarten lapponica;subspecies;3;5;True;False;;Aves;
+233927;Charadrius alexandrinus alexandrinus;svartbent strandpipare, underarten alexandrinus;subspecies;3;5;True;False;;Aves;
+102620;Surnia ulula;hökuggla;species;3;5;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+233959;Surnia ulula ulula;hökuggla, underarten ulula;subspecies;3;5;True;False;;Aves;
+233962;Strix nebulosa lapponica;lappuggla, underarten lapponica;subspecies;3;5;True;False;;Aves;
+233963;Strix uralensis liturata;slaguggla, underarten liturata;subspecies;3;5;True;False;;Aves;
+102117;Asio flammeus;jorduggla;species;3;5;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+233965;Asio flammeus flammeus;jorduggla, underarten flammeus;subspecies;3;5;True;False;;Aves;
+233974;Upupa epops epops;härfågel, underarten epops;subspecies;3;5;True;False;;Aves;
+233976;Alcedo atthis atthis;kungsfiskare, underarten atthis;subspecies;3;5;True;False;;Aves;
+233983;Dendrocopos medius medius;mellanspett, underarten medius;subspecies;3;5;True;False;;Aves;
+101299;Melitta melanura;storblomsterbi;species;3;5;False;False;;Insecta;Steklar
+101302;Meloe brevicollis;korthalsad majbagge;species;3;5;False;False;;Insecta;
+101341;Monochamus sartor;granbock;species;3;5;False;False;;Insecta;Skalbaggar
+101510;Parnassius mnemosyne;mnemosynefjäril;species;3;5;False;False;;Insecta;Fjärilar
+101598;Plebejus argyrognomon;kronärtsblåvinge;species;3;5;False;False;;Insecta;Fjärilar
+101635;Prostomis mandibularis;;species;3;5;False;False;;Insecta;Skalbaggar
+101700;Reitterelater dubius;eksavknäppare;species;3;5;False;False;;Insecta;Skalbaggar
+102563;Eresus sandaliatus;nyckelpigespindel;species;3;5;False;False;;Arachnida;Spindlar
+102665;Andrena chrysopyga;stäppsandbi;species;3;5;False;False;;Insecta;Steklar
+102681;Halictus quadricinctus;storbandbi;species;3;5;False;False;;Insecta;Steklar
+102695;Nomada integra;slåttergökbi;species;3;5;False;False;;Insecta;Steklar
+264287;Botrychium tenebrosum;pysslinglåsbräken;species;3;5;False;False;;Psilotopsida;Kärlväxter
+264305;Cephalanthera damasonium × longifolia;stor skogslilja × vit skogslilja;species;3;5;False;False;;Liliopsida;
+264308;Dactylorhiza majalis;dubbelnycklar;species;3;5;False;False;;Liliopsida;
+222411;Dactylorhiza majalis subsp. baltica;baltnycklar;subspecies;3;5;False;False;;Liliopsida;
+264310;Epipactis helleborine × phyllanthes;skogsknipprot × kal knipprot;species;3;5;False;False;;Liliopsida;
+259035;Parnassius mnemosyne argiope;;subspecies;3;5;False;False;;Insecta;
+259036;Parnassius mnemosyne romani;;subspecies;3;5;False;False;;Insecta;
+259037;Parnassius mnemosyne nordstromi;;subspecies;3;5;False;False;;Insecta;
+259038;Parnassius mnemosyne atlanticus;;subspecies;3;5;False;False;;Insecta;
+259073;Plebejus argyrognomon norvegicus;;subspecies;3;5;False;False;;Insecta;
+264827;Polystichum aculeatum × braunii;uddbräken × skuggbräken;species;3;5;False;False;;Polypodiopsida;
+264834;Asplenium adulterinum × trichomanes subsp. trichomanes;brunbräken × vanlig svartbräken;species;3;5;False;False;;Polypodiopsida;
+103062;Falco vespertinus;aftonfalk;species;3;5;True;False;H: fynd visas öppet efter 5 år;Aves;Fåglar
+264959;Dactylorhiza majalis subsp. integrata;englandsnycklar;subspecies;3;5;False;False;;Liliopsida;
+264961;Dactylorhiza majalis var. integrata;äkta englandsnycklar;variety;3;5;False;False;;Liliopsida;
+264962;Dactylorhiza majalis var. junialis;leopardnycklar;variety;3;5;False;False;;Liliopsida;
+264965;Dactylorhiza incarnata var. incarnata × majalis subsp. integrata;äkta ängsnycklar × englandsnycklar;species;3;5;False;False;;Liliopsida;
+264978;Epipactis leptochila × phyllanthes;grön knipprot × kal knipprot;species;3;5;False;False;;Liliopsida;
+264979;Ophrys apifera;biblomster;species;3;5;False;False;;Liliopsida;Kärlväxter
+223586;Dactylorhiza incarnata var. ochroleuca × majalis subsp. majalis;vaxnycklar × majnycklar;species;3;5;False;False;;Liliopsida;
+6002893;Dactylorhiza majalis subsp. elatior;gotlandsnycklar;subspecies;3;5;False;False;;Liliopsida;Kärlväxter
+6008881;Dactylorhiza majalis subsp. majalis × subsp. integrata var. integrata;majnycklar × äkta englandsnycklar;species;3;5;False;False;;Liliopsida;
+6008882;Dactylorhiza majalis subsp. majalis × subsp. purpurella var. pulchella;majnycklar × äkta strandnycklar;species;3;5;False;False;;Liliopsida;
+6010520;Dactylorhiza maculata subsp. fuchsii × majalis subsp. elatior;skogsnycklar × gotlandsnycklar;species;3;5;False;False;;Liliopsida;
+6010635;Asplenium adulterinum × trichomanes;brunbräken × svartbräken;species;3;5;False;False;;Polypodiopsida;
+6031493;Epipactis phyllanthes subsp. arenaria;sandknipprot;subspecies;3;5;False;False;;Liliopsida;
+6031495;Epipactis phyllanthes subsp. confusa;dansk knipprot;subspecies;3;5;False;False;;Liliopsida;
+6031494;Epipactis phyllanthes subsp. pendula;engelsk knipprot;subspecies;3;5;False;False;;Liliopsida;
+6046616;Accipiter gentilis buteoides;duvhök, underarten buteoides;subspecies;3;5;True;False;;Aves;
+6051141;Cetrelia cetrarioides;;species;3;5;False;False;;Lecanoromycetes;Lavar
+6051142;Cetrelia monachorum;;species;3;5;False;False;;Lecanoromycetes;Lavar
+6051143;Cetrelia olivetorum;;species;3;5;False;False;;Lecanoromycetes;

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="sv" data-version="1.7.0">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Skogsinventering</title>
+  <meta name="description" content="Offline-app för naturvärdesinventering i skog med AI-artigenkänning.">
+  <meta name="theme-color" content="#1f4d2b">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><img src="icons/icon-192.png" alt="" width="28" height="28"> Skogsinventering</div>
+    <div class="pills"><span class="pill" id="gps-pill" role="status">GPS …</span><span class="pill" id="backup-pill" title="Tid sedan senaste säkerhetskopia"></span><span class="pill" id="net-pill" aria-label="Nätverksstatus"></span></div>
+  </header>
+  <div id="active-bar" class="active-bar" hidden></div>
+  <main>
+    <section class="view" id="view-id"></section>
+    <section class="view" id="view-obs" hidden></section>
+    <section class="view" id="view-objects" hidden></section>
+    <section class="view" id="view-map" hidden></section>
+    <section class="view" id="view-more" hidden></section>
+  </main>
+  <div id="rec-bar" class="rec-bar" role="status" hidden></div>
+  <nav class="tabs" aria-label="Huvudmeny">
+    <button data-view="id" class="on"><span aria-hidden="true">📷</span>Fält</button>
+    <button data-view="obs"><span aria-hidden="true">📋</span>Fynd</button>
+    <button data-view="objects"><span aria-hidden="true">🌲</span>Objekt</button>
+    <button data-view="map"><span aria-hidden="true">🗺️</span>Karta</button>
+    <button data-view="more"><span aria-hidden="true">⚙️</span>Mer</button>
+  </nav>
+  <noscript>Appen kräver JavaScript.</noscript>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
