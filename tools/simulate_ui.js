@@ -248,7 +248,7 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
     }],
     [2, 'inställningar', async () => { await tab('more'); await page.$eval('details.more-files', d => { d.open = true; }).catch(() => {}); await tap(pick(['#set-prot', '#set-acc', '#set-office'])); if (rnd() < .3) await page.selectOption('#set-theme', pick(['auto', 'light', 'dark'])).catch(() => {}); }],
     [2, 'export + kontroll', async () => {
-      await closeModal(); await tab('more'); await page.waitForSelector('#ex-delivery');
+      await closeModal(); await tab('more'); await page.waitForSelector('#ex-delivery'); await page.waitForTimeout(400);
       const protectOn = await page.$eval('#set-prot', e => e.checked).catch(() => true);
       const which = pick(['#ex-delivery', '#ex-geo', '#ex-csv', '#ex-zip', '#ex-obj', '#ex-rep']);
       await page.$eval('details.more-files', d => { d.open = true; }).catch(() => {});

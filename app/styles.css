@@ -373,3 +373,27 @@ body.on-map .map-wrap { isolation: isolate; position: relative; height: calc(100
 .vtx { background: #ffd600; border: 3px solid #111; border-radius: 50%; box-shadow: 0 0 0 2px #fff; }
 .obj-label { background: rgba(0,0,0,.6); color: #fff; border: 0; box-shadow: none; font-weight: 700; }
 .obj-label::before { display: none; }
+
+/* ---------- Förklaringsknappar (i) ---------- */
+.info-btn { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--muted); background: transparent; color: var(--muted);
+  font: italic 700 .95rem Georgia, serif; line-height: 1; padding: 0; cursor: pointer; position: relative; }
+.info-btn::after { content: ''; position: absolute; inset: -9px; } /* 48 px tryckyta */
+.tile { position: relative; }
+.tile .bigtile { width: 100%; height: 100%; }
+.tile .info-btn { position: absolute; top: 6px; right: 6px; }
+.tile .btn.primary + .info-btn { color: var(--accent-text); border-color: var(--accent-text); }
+.here-card .info-btn { margin-left: 8px; }
+.mapbtn.mapinfo { width: 52px; font: italic 700 1.3rem Georgia, serif; color: #333; }
+.info-text { font-size: 1.05rem; line-height: 1.5; }
+h3 + .info-btn, .row.between .info-btn { margin-left: 8px; }
+
+/* ---------- iPhone: luft under statusfältet/Dynamic Island ---------- */
+header.top { padding-top: calc(12px + env(safe-area-inset-top)); padding-bottom: 12px; }
+main { padding-top: 16px; }
+.modal { max-height: calc(100dvh - env(safe-area-inset-top) - 28px); }
+body.on-map .map-wrap { height: calc(100dvh - 60px - 62px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+@supports not (height: 100dvh) { .modal { max-height: calc(100vh - env(safe-area-inset-top) - 28px); } }
+.modal.full { max-height: none; height: 100dvh; padding-top: calc(16px + env(safe-area-inset-top)); }
+.modal.full .modal-close { top: calc(8px + env(safe-area-inset-top)); }
+.mapbtn.mapinfo { height: 52px; border-radius: 12px; border: 1px solid rgba(0,0,0,.25); background: #fff; }
+.mapbtn.mapinfo::after { display: none; }

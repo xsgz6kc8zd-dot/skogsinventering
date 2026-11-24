@@ -325,6 +325,33 @@ async function quickSaveObs(speciesId, { status = 'sure', prob = null, withPhoto
   return obs;
 }
 
+// ---------------- Korta förklaringar (ⓘ) ----------------
+const INFO = {
+  art: ['Art', 'För arter du känner igen. Sök eller tryck på arten – den registreras direkt här med GPS-position (okulärt i fält). Tryck en gång till på samma art för mängd, substrat, foto eller osäker bestämning.'],
+  foto: ['Foto', 'För arter du inte känner igen. Ta en eller flera bilder (närbild + översikt). Om AI-artbestämning är nedladdad får du förslag med procent. Annars – eller om inget förslag stämmer – spara som obestämd och bestäm arten senare under Lista.'],
+  objekt: ['Objekt', 'Ett naturvärdesobjekt (en avgränsad yta). Avgränsa genom att gå gränsen med GPS eller rita på kartan. Fynd du gör inne i objektet kopplas automatiskt till det.'],
+  punkt: ['Punkt', 'En anteckning med position och gärna foto – t.ex. en grov låga, ett hålträd, en kulturlämning eller något du vill hitta igen. Räknas inte som artfynd.'],
+  here: ['Du är i …', 'Visar vilket naturvärdesobjekt din GPS-position ligger i. Nya fynd kopplas till det objektet. Tryck för att öppna objektkortet.'],
+  senast: ['Senast', 'Arter du registrerat nyligen. Ett tryck registrerar arten igen på din nuvarande position. Håll fingret kvar för att fylla i detaljer först.'],
+  osaker: ['Osäker bestämning', 'Kryssa i om du inte är säker på arten. Fyndet sparas men räknas inte när objektets artvärde och antal naturvårdsarter summeras. Fynd som bara bygger på AI-förslag räknas inte heller förrän du valt en kontrollmetod.'],
+  objkort: ['Objektkortet', 'Fältläge visar bara det som behövs ute: avgränsning, biotop, strukturer, foton, anteckningar och preliminär klass. Kontorsläget visar alla rapportfält (motiveringar, Natura 2000, biotopskydd, skötsel och bedömningsmatrisen). Allt sparas automatiskt.'],
+  avgr: ['Avgränsning', '"Gå gränsen" spelar in din GPS-position medan du går runt objektet – du kan registrera arter under tiden. "Rita på kartan" låter dig trycka ut hörnen och dra dem rätt. Fynd kopplas om automatiskt när avgränsningen ändras.'],
+  karta: ['Kartan', '▤ = bakgrundskarta, Skogsstyrelsens lager och nedladdning för offline. ⌖ = centrera på dig. ⤢ = visa alla fynd och objekt. Tryck på en punkt eller ett objekt för att öppna det. Röd ring = rödlistad art eller signalart.'],
+  lager: ['Kartlager', 'OpenStreetMap kräver nät. Lantmäteriets terrängkarta kräver en gratis API-nyckel men kan laddas ner för offline. Skogsstyrelsens lager (nyckelbiotoper m.m.) visas online för hela landet och kan laddas ner för det område som syns.'],
+  backup: ['Säkerhetskopia', 'Allt du registrerar finns bara på telefonen. En säkerhetskopia är en ZIP-fil med alla fynd, objekt och foton som kan återställas om telefonen går sönder eller webbläsardata rensas. Spara den varje kväll, t.ex. i Filer eller iCloud Drive.'],
+  leverans: ['Leverans', 'Paket till beställaren: GeoJSON för GIS, fynd- och objektprotokoll för Excel, rapportunderlag och foton. Skyddsklassade arter redovisas generaliserat (rutor, år) enligt SLU Artdatabanken.'],
+  kontor: ['Kontorsläge', 'Av: objektkortet visar bara fältuppgifter. På: alla rapportfält visas, för när du sammanställer inventeringen vid datorn eller i bilen.'],
+  ai: ['AI-artbestämning', 'Valfri. En bildmodell (BioCLIP, ≈105 MB) som körs helt på telefonen utan nät och ger artförslag med procent. Den är ett stöd – rödlistade arter och signalarter ska alltid verifieras.'],
+};
+const info = k => `<button type="button" class="info-btn" data-info="${k}" aria-label="Förklaring: ${esc(INFO[k][0])}">i</button>`;
+document.addEventListener('click', e => {
+  const b = e.target.closest('.info-btn'); if (!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const [t, txt] = INFO[b.dataset.info] || ['', ''];
+  const sh = openSheet(`<h3>${esc(t)}</h3><p class="info-text">${esc(txt)}</p><button class="btn primary full" id="info-ok">OK</button>`, { sub: sheets.length > 0 });
+  $('#info-ok', sh.m).onclick = () => closeSheet(sh);
+}, true);
+
 // ---------------- Fältvyn: Art · Foto · Objekt · Punkt ----------------
 function recentSpecies(n = 8) {
   const seen = new Set(), out = [];
@@ -350,14 +377,14 @@ function renderIdView() {
       <div id="results"></div>`;
   } else {
     v.innerHTML = `
-      <div class="card here-card"><div id="here">${hereText()}</div></div>
+      <div class="card here-card row"><div id="here" class="grow">${hereText()}</div>${info('here')}</div>
       <div class="action-grid">
-        <button class="btn primary bigtile" id="act-art"><span aria-hidden="true">✓</span>Art<small>känd art</small></button>
-        <label class="btn bigtile"><input type="file" accept="image/*" capture="environment" id="cam" hidden><span aria-hidden="true">📷</span>Foto<small>okänd art</small></label>
-        <button class="btn bigtile" id="act-obj"><span aria-hidden="true">▣</span>Objekt<small>ny avgränsning</small></button>
-        <button class="btn bigtile" id="act-note"><span aria-hidden="true">✎</span>Punkt<small>anteckning/foto</small></button>
+        <div class="tile"><button class="btn primary bigtile" id="act-art"><span aria-hidden="true">✓</span>Art<small>känd art</small></button>${info('art')}</div>
+        <div class="tile"><label class="btn bigtile"><input type="file" accept="image/*" capture="environment" id="cam" hidden><span aria-hidden="true">📷</span>Foto<small>okänd art</small></label>${info('foto')}</div>
+        <div class="tile"><button class="btn bigtile" id="act-obj"><span aria-hidden="true">▣</span>Objekt<small>ny avgränsning</small></button>${info('objekt')}</div>
+        <div class="tile"><button class="btn bigtile" id="act-note"><span aria-hidden="true">✎</span>Punkt<small>anteckning/foto</small></button>${info('punkt')}</div>
       </div>
-      ${recent.length ? `<div class="card"><h3>Senast</h3><p class="muted small">Ett tryck = nytt fynd här. Håll inne för detaljer.</p>
+      ${recent.length ? `<div class="card"><div class="row between"><h3>Senast</h3>${info('senast')}</div><p class="muted small">Ett tryck = nytt fynd här. Håll inne för detaljer.</p>
         <div class="recent">${recent.map(id => { const sp = state.species[id]; return `<button class="chip recent-chip" data-id="${id}">${esc(cap(sp.sv || sp.sci))}</button>`; }).join('')}</div></div>` : ''}`;
   }
   v.querySelectorAll('#group-chips .chip').forEach(b => b.onclick = () => { state.group = b.dataset.g; state.settings.group = state.group; db.setKV('settings', state.settings); renderIdView(); analyze(); });
@@ -702,7 +729,7 @@ function openSaveSheet(speciesId, prob, existing, draft) {
     <div class="meta">${GROUP_LABEL[sp.grp] || ''} ${badges(sp)} ${prob != null ? `<span class="muted small">AI ${Math.round(prob * 100)} %</span>` : ''}
       <button class="btn small ghost" id="sv-change">Byt art</button></div>
     ${sp.sk ? `<div class="note warn small"><b>Skyddsklassad</b> – exakt läge, datum och kommentarer döljs i leveransen (${sp.sk} km-ruta).${sp.skR && sp.skR !== 'H' ? ' ' + esc(sp.skR) : ''}</div>` : ''}
-    <label class="check big-check"><input type="checkbox" id="sv-unsure" ${status0 === 'unsure' ? 'checked' : ''}> <span><b>Osäker bestämning</b> <span class="muted small">– räknas inte i objektets artvärde</span></span></label>
+    <label class="check big-check"><input type="checkbox" id="sv-unsure" ${status0 === 'unsure' ? 'checked' : ''}> <span class="grow"><b>Osäker bestämning</b> <span class="muted small">– räknas inte i objektets artvärde</span></span>${info('osaker')}</label>
     <div class="small" id="sv-status-note"></div>
     ${sp.grp === 'fagel' ? `<div class="field">Aktivitet${chipRow('activity', BIRD_ACTIVITY, o.activity)}</div>` : ''}
     <div class="field">Mängd${chipRow('amount', AMOUNT, o.amount)}</div>
@@ -954,7 +981,7 @@ function openObjectEditor(existing, startTab = null) {
     </div>
 
     <section data-tab="avgr">
-      <div class="small"><b id="ob-area"></b></div>
+      <div class="row between"><div class="small"><b id="ob-area"></b></div>${info('avgr')}</div>
       <svg class="mini-map" id="ob-map" viewBox="0 0 100 60" role="img" aria-label="Avgränsning"></svg>
       <div class="row gap"><button class="btn primary grow" id="ob-track"></button><button class="btn grow" id="ob-drawmap">✎ Rita på kartan</button></div>
       <p class="muted small">Inspelningen fortsätter i bakgrunden medan du registrerar arter. Skärmen hålls vaken.</p>
@@ -993,7 +1020,7 @@ function openObjectEditor(existing, startTab = null) {
       <div class="field office">Osäkerhet i klassningen${chipRow('osak', ['Låg', 'Medel', 'Hög'], ob.osakerhet)}</div>
     </section>
 
-    <button class="linkbtn" id="ob-office">${office ? 'Fältläge: dölj rapportfälten' : 'Kontorsläge: visa alla rapportfält (motiveringar, Natura 2000 …)'}</button>
+    <div class="row"><button class="linkbtn grow" id="ob-office">${office ? 'Fältläge: dölj rapportfälten' : 'Kontorsläge: visa alla rapportfält (motiveringar, Natura 2000 …)'}</button>${info('objkort')}</div>
     <div class="row gap actions"><span class="small muted grow" id="ob-saved">${existing ? 'Ändringar sparas automatiskt' : 'Sparas automatiskt när du börjar fylla i'}</span>
       <button class="btn" id="ob-revert" hidden>Ångra ändringar</button><button class="btn primary" id="ob-done">Klar</button></div>`);
   const m = sheet.m;
@@ -1343,6 +1370,7 @@ async function renderMapView() {
         <button class="mapbtn" id="mp-layers" aria-label="Kartlager och nedladdning">▤</button>
         <button class="mapbtn" id="mp-me" aria-label="Centrera på min position">⌖</button>
         <button class="mapbtn" id="mp-fit" aria-label="Visa alla fynd och objekt">⤢</button>
+        <button class="mapbtn mapinfo info-btn" data-info="karta" aria-label="Förklaring: kartan">i</button>
       </div>
       <div class="map-note" id="mp-note" role="status" hidden></div>
       <div class="draw-bar" id="mp-draw" hidden></div>
@@ -1366,7 +1394,7 @@ async function renderMapView() {
 }
 function openLayerSheet() {
   const ms = mapSet();
-  const sh = openSheet(`<h3>Kartlager</h3>
+  const sh = openSheet(`<div class="row between"><h3>Kartlager</h3>${info('lager')}</div>
     <div class="field">Bakgrund
       ${Object.entries(BASES).map(([k, d]) => `<label class="check"><input type="radio" name="ly-base" value="${k}" ${ms.base === k ? 'checked' : ''}> ${d.name}</label>`).join('')}</div>
     <label class="field" id="ly-key-row">API-nyckel för Lantmäteriets topografiska webbkarta
@@ -1481,13 +1509,13 @@ async function renderMoreView() {
   const ms = mapSet();
   const backupOld = !state.lastBackup || Date.now() - state.lastBackup > 86400000;
   v.innerHTML = `
-    <div class="card ${backupOld && state.observations.length ? 'warn-card' : ''}"><h3>💾 Säkerhetskopia</h3>
+    <div class="card ${backupOld && state.observations.length ? 'warn-card' : ''}"><div class="row between"><h3>💾 Säkerhetskopia</h3>${info('backup')}</div>
       <p class="small" id="backup-age"></p>
       <button class="btn primary full big" id="ex-zip">💾 Spara säkerhetskopia</button>
       <p class="muted small">Fynden finns bara på telefonen. Spara en kopia varje kväll (t.ex. till Filer, Drive eller mejl till dig själv). Kopian innehåller exakta lägen – skicka den inte till beställaren.</p>
       <label class="btn full ghost"><input type="file" accept=".zip" id="im-zip" hidden>Återställ från säkerhetskopia …</label>
     </div>
-    <div class="card"><h3>📦 Leverans</h3>
+    <div class="card"><div class="row between"><h3>📦 Leverans</h3>${info('leverans')}</div>
       <button class="btn primary full big" id="ex-delivery">📦 Leverans till beställare (ZIP${state.settings.protect !== false ? ', skyddad' : ''})</button>
       <p class="small muted">GeoJSON, fynd- och objektprotokoll (CSV), rapportunderlag och foton. ${state.observations.filter(o => protectionKm(o, state.species[o.speciesId])).length} skyddsklassade fynd redovisas generaliserat.</p>
       <details class="more-files"><summary>Enskilda filer och inställningar</summary><div class="col gap">
@@ -1502,14 +1530,14 @@ async function renderMoreView() {
     <div class="card"><div class="row between"><h3>Uppdrag</h3><button class="btn small" id="btn-project">Ändra</button></div>
       ${pr.name || pr.client ? `<div><b>${esc(pr.name || 'Namnlöst uppdrag')}</b>${pr.client ? ` · ${esc(pr.client)}` : ''}</div>` : '<div class="muted small">Inget uppdrag angivet.</div>'}
       <div class="meta">${esc(pr.standard)} · ${esc(pr.level)}${pr.addons.length ? ' · Tillägg: ' + pr.addons.map(esc).join(', ') : ' · inga tillägg'}${pr.inventors ? ' · ' + esc(pr.inventors) : ''}</div>
-      <label class="check"><input type="checkbox" id="set-office" ${state.settings.office ? 'checked' : ''}> <span><b>Kontorsläge</b> – visa alla rapportfält i objektkortet (motiveringar, Natura 2000, biotopskydd, skötsel). Av = fältläge med bara det som behövs ute.</span></label>
+      <label class="check"><input type="checkbox" id="set-office" ${state.settings.office ? 'checked' : ''}> <span class="grow"><b>Kontorsläge</b> – visa alla rapportfält i objektkortet (motiveringar, Natura 2000, biotopskydd, skötsel). Av = fältläge med bara det som behövs ute.</span>${info('kontor')}</label>
     </div>
     <div class="card"><h3>🗺️ Karta</h3>
       <p class="small">Bakgrund: <b>${esc(BASES[ms.base]?.name || '')}</b>${ms.overlays.length ? ` · ${ms.overlays.length} lager från Skogsstyrelsen` : ''}</p>
       <button class="btn full" id="btn-maplayers">Kartlager, Lantmäteriet-nyckel och nedladdning</button>
       <p class="muted small">OpenStreetMap fungerar direkt men kräver nät. För karta offline: skaffa en gratis nyckel hos Lantmäteriet, välj terrängkartan och ladda ner området innan du åker ut.</p>
     </div>
-    <div class="card"><h3>🤖 AI-artbestämning <span class="muted small">(valfri)</span></h3>
+    <div class="card"><div class="row between"><h3>🤖 AI-artbestämning <span class="muted small">(valfri)</span></h3>${info('ai')}</div>
       <p class="small">${state.modelReady ? '✅ Nedladdad – fungerar offline.' : 'Inte nedladdad. Utan AI kan du ändå registrera arter, spara foton som obestämda och bestämma dem senare.'}</p>
       ${state.modelReady ? '' : '<button class="btn full" id="btn-dl">Ladda ner AI (≈105 MB, wifi rekommenderas)</button><div class="progress" hidden id="dl-prog"><span></span></div>'}
       <label class="check"><input type="checkbox" id="set-acc" ${state.settings.accurate ? 'checked' : ''}> Noggrann analys (tre vyer per bild, ≈3× långsammare)</label>
