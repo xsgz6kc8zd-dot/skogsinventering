@@ -1,5 +1,6 @@
 # Publicerar appen (mappen app/) på GitHub Pages vid varje ändring på main.
-# Engångsinställning: Settings → Pages → Source = "GitHub Actions".
+# Engångsinställning (gjord): Settings → Pages → Source = "GitHub Actions".
+# Adress: https://xsgz6kc8zd-dot.github.io/skogsinventering/
 name: Publicera på GitHub Pages
 on:
   workflow_dispatch:
