@@ -83,7 +83,10 @@ def save_image(sp, media):
         return json.load(open(meta)) if os.path.exists(meta) else None
     for m in media:
         try:
-            b = get(m['url'], binary=True, tries=1)
+            url = m['url']
+            if 'inaturalist-open-data' in url:  # mellanstorlek räcker (≈500 px)
+                url = url.replace('/original.', '/medium.')
+            b = get(url, binary=True, tries=1)
             im = Image.open(io.BytesIO(b)).convert('RGB')
             im.thumbnail((420, 420))
             im.save(dst, 'JPEG', quality=68, optimize=True, progressive=True)
