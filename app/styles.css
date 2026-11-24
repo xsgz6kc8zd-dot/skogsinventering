@@ -403,3 +403,5 @@ body.on-map .map-wrap { height: calc(100dvh - 60px - 62px - env(safe-area-inset-
    så att menyn längst ner hamnar en bit upp med ett svart fält under. */
 html { min-height: calc(100% + env(safe-area-inset-top)); background: var(--bg); }
 body.on-map .map-wrap { position: fixed; left: 0; right: 0; top: var(--header-h, 60px); bottom: var(--nav-h, 62px); height: auto; }
+/* iOS 26 lägger en suddig kant under statusfältet – håll rubrikens text nedanför den */
+header.top { padding-top: calc(22px + env(safe-area-inset-top)); padding-bottom: 14px; }
