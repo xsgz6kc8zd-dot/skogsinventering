@@ -38,3 +38,9 @@ MIT-licensen (gäller båda komponenterna ovan, med respektive upphovsrättsinne
 - **OpenStreetMap**: kartplattor från tile.openstreetmap.org, © OpenStreetMap-bidragsgivare (ODbL). Plattorna visas bara online och laddas aldrig ner i förväg, enligt OSM:s regler för plattanvändning.
 - **Lantmäteriet**: den topografiska webbkartan (CC BY 4.0) används bara med användarens egen API-nyckel.
 - **Skogsstyrelsen**: lagren hämtas från Geodataportalens öppna karttjänster.
+
+## Fältguiden
+
+- **Foton** (`app/data/guide/`): fältobservationer från iNaturalist och andra källor via GBIF, med licensen CC0 eller CC BY 4.0. Fotograf, licens och länk till observationen visas under varje foto i appen. Bilderna är nedskalade.
+- **Antal fynd och månader**: GBIF:s förekomstdata för Sverige, främst från Artportalen (SLU Artdatabanken).
+- **Länkar** till Artfakta (SLU Artdatabanken) öppnas på webben och kräver nät.

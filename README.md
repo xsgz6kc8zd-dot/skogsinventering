@@ -27,6 +27,8 @@ Fyra flikar: **Fält · Karta · Lista · Mer**. Upplägget bygger på en gransk
   - Skogsstyrelsens öppna lager: nyckelbiotoper, naturvärden, sumpskog, avverkningsanmälningar, biotopskydd, naturvårdsavtal och skoghistoria. Lagren hämtas som kartbild online och kan laddas ner som vektordata för offline.
   - Rita och justera objekt direkt på kartan, och se ditt spår från det senaste dygnet.
 - **AI-artbestämning är valfri** (Mer → AI, ≈105 MB).
+- **Fältguide (📖)** för signalarter, E-arter och rödlistade arter i skogsurvalet: foto, när arten rapporteras i Sverige, antal fynd i Sverige, förväxlingsarter i samma släkte och länk till Artfakta. 📖 finns vid arterna överallt i appen och fungerar offline.
+- **Leveranskontroll** innan leverans. Den visar fel, varningar och tips, till exempel objekt utan avgränsning eller motivering, klass som avviker från matrisen, obestämda och osäkra fynd, rödlistade arter utan foto och saknad säkerhetskopia.
 
 ## Funktioner
 
@@ -105,6 +107,7 @@ python3 tools/fetch_skyddsklass.py   # SLU Artdatabankens skyddsklassade arter (
 python3 tools/build_species.py       # app/data/species.json (lägg till arter i tools/species_input.csv)
 python3 tools/export_model.py        # app/model/bioclip_visual_int8.onnx (behövs bara en gång)
 python3 tools/build_embeddings.py    # app/data/text_emb.bin
+python3 tools/build_guide.py         # fältguiden: app/data/guide.json och foton (GBIF/iNaturalist)
 python3 tools/evaluate.py 25 2       # mät träffsäkerhet på färska svenska fältfoton
 python3 tools/calibrate.py           # föreslår LOGIT_SCALE för app/js/worker.js
 ```
