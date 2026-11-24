@@ -36,6 +36,7 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
   await page.waitForSelector('nav.tabs');
   // Ladda ner modellen (förutsättning för fältbruk)
   await page.click('nav.tabs button[data-view=more]');
+  await page.waitForSelector('#btn-dl, #set-acc');
   if (await page.$('#btn-dl')) { await page.click('#btn-dl'); await page.waitForSelector('text=Nedladdad – fungerar offline', { timeout: 300000 }); }
 
   const has = async sel => !!(await page.$(sel));
