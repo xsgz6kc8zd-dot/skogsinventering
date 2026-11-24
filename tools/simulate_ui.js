@@ -233,6 +233,20 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
       if (rnd() < 0.2) await page.setInputFiles('#pt-cam', pick(images)).catch(() => {});
       await page.waitForTimeout(150); if (rnd() < 0.85) { await tap('#pt-save'); stats.saved++; } else await tap('#pt-cancel');
     }],
+    [2, 'fältguide', async () => {
+      await closeModal(); await tab('id');
+      if (rnd() < 0.5) { if (!(await tap('#act-guide'))) return; await page.waitForSelector('.guide-card', { timeout: 3000 }).catch(() => {});
+        if (rnd() < 0.3) await page.fill('#gb-q', pick(QUERIES)).catch(() => {});
+        const c = await page.$$('.guide-card'); if (c.length) await pick(c.slice(0, 10)).click().catch(() => {});
+      } else { const g = await page.$$('[data-guide]'); if (g.length) await pick(g).click().catch(() => {}); }
+      await page.waitForTimeout(150); if (rnd() < 0.3) await tap('.guide-lik'); await closeModal();
+    }],
+    [2, 'leveranskontroll', async () => {
+      await closeModal(); await tab('more'); await page.waitForSelector('#btn-check'); await page.waitForTimeout(300);
+      if (!(await tap('#btn-check'))) return; await page.waitForTimeout(150);
+      const b = await page.$$('[data-ck]'); if (b.length && rnd() < 0.5) { await pick(b).click().catch(() => {}); await page.waitForTimeout(150); }
+      await closeModal();
+    }],
     [2, 'spara obestämd', async () => { if (await tap('#btn-indet')) { await tap('#sv-save'); stats.saved++; } }],
     [1, 'du är i → objektkort', async () => { await closeModal(); await tab('id'); await tap('#here'); await page.waitForTimeout(100); await tap('#ob-done'); }],
     [2, 'tryck på kartan', async () => {
@@ -252,7 +266,7 @@ const QUERIES = ['lung', 'gran', 'ticka', 'mossa', 'Lobaria', 'tall', 'hackspett
       const protectOn = await page.$eval('#set-prot', e => e.checked).catch(() => true);
       const which = pick(['#ex-delivery', '#ex-geo', '#ex-csv', '#ex-zip', '#ex-obj', '#ex-rep']);
       await page.$eval('details.more-files', d => { d.open = true; }).catch(() => {});
-      const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 10000 }), tap(which)]);
+      const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 10000 }), (async () => { await tap(which); await page.waitForTimeout(200); await tap('#ck-go'); })()]);
       const file = await dl.path(); stats.exports++;
       const s = await checkInvariants('export');
       if (which === '#ex-geo') {

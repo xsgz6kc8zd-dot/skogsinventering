@@ -278,7 +278,7 @@ function renderResults() {
           const p = a.p * 100;
           return `<li class="res ${i === 0 ? 'first' : ''}" data-id="${sp.id}" data-p="${a.p}" role="button" tabindex="0" aria-label="Välj ${esc(sp.sv || sp.sci)}, ${p >= 1 ? Math.round(p) : 'under 1'} procent">
             <div class="pct">${p >= 1 ? Math.round(p) : '<1'} %</div>
-            <div class="info"><div>${spName(sp)}</div><div class="meta">${GROUP_LABEL[sp.grp] || ''} ${badges(sp)}</div>
+            <div class="info"><div>${spName(sp)} ${guideBtn(sp.id)}</div><div class="meta">${GROUP_LABEL[sp.grp] || ''} ${badges(sp)}</div>
               <div class="bar"><span style="width:${Math.max(1, p).toFixed(1)}%"></span></div></div>
             <button class="quick" data-id="${sp.id}" data-p="${a.p}" aria-label="Spara ${esc(sp.sv || sp.sci)} direkt" title="Spara direkt">⚡</button>
           </li>`;
@@ -341,6 +341,7 @@ const INFO = {
   backup: ['Säkerhetskopia', 'Allt du registrerar finns bara på telefonen. En säkerhetskopia är en ZIP-fil med alla fynd, objekt och foton som kan återställas om telefonen går sönder eller webbläsardata rensas. Spara den varje kväll, t.ex. i Filer eller iCloud Drive.'],
   leverans: ['Leverans', 'Paket till beställaren: GeoJSON för GIS, fynd- och objektprotokoll för Excel, rapportunderlag och foton. Skyddsklassade arter redovisas generaliserat (rutor, år) enligt SLU Artdatabanken.'],
   kontor: ['Kontorsläge', 'Av: objektkortet visar bara fältuppgifter. På: alla rapportfält visas, för när du sammanställer inventeringen vid datorn eller i bilen.'],
+  guide: ['Fältguide', 'Foto, säsong, antal fynd i Sverige och förväxlingsarter för signalarter och rödlistade arter. Tryck på 📖 vid en art var som helst i appen.'],
   ai: ['AI-artbestämning', 'Valfri. En bildmodell (BioCLIP, ≈105 MB) som körs helt på telefonen utan nät och ger artförslag med procent. Den är ett stöd – rödlistade arter och signalarter ska alltid verifieras.'],
 };
 const info = k => `<button type="button" class="info-btn" data-info="${k}" aria-label="Förklaring: ${esc(INFO[k][0])}">i</button>`;
@@ -351,6 +352,152 @@ document.addEventListener('click', e => {
   const sh = openSheet(`<h3>${esc(t)}</h3><p class="info-text">${esc(txt)}</p><button class="btn primary full" id="info-ok">OK</button>`, { sub: sheets.length > 0 });
   $('#info-ok', sh.m).onclick = () => closeSheet(sh);
 }, true);
+
+// ---------------- Fältguide (offline) ----------------
+const GUIDE_URL = new URL('../data/guide.json', import.meta.url).href;
+const GUIDE_IMG = id => new URL(`../data/guide/${id}.jpg`, import.meta.url).href;
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+async function loadGuide() {
+  if (!state.guide) { try { state.guide = await fetch(GUIDE_URL).then(r => r.json()); } catch { state.guide = {}; } }
+  return state.guide;
+}
+const dyntaxaId = sp => (sp.dyntaxa || '').split(':').pop();
+function seasonText(m) {
+  if (!m || !m.some(Boolean)) return '';
+  const max = Math.max(...m); const on = m.map(v => v >= max * 0.35);
+  const ranges = []; let start = -1;
+  for (let i = 0; i <= 12; i++) { if (i < 12 && on[i]) { if (start < 0) start = i; } else if (start >= 0) { ranges.push(start === i - 1 ? MONTHS[start] : `${MONTHS[start]}–${MONTHS[i - 1]}`); start = -1; } }
+  return ranges.join(', ');
+}
+async function openGuide(id) {
+  const sp = state.species[id]; if (!sp) return;
+  const g = (await loadGuide())[id] || {};
+  const max = g.m ? Math.max(1, ...g.m) : 1;
+  const lines = [];
+  if (sp.sig === 'S') lines.push('<b>Signalart (S)</b> – visar att skogen kan ha höga naturvärden. Hittar du flera signalarter är det ett tecken på värdefull skog.');
+  if (sp.sig === 'E') lines.push('<b>Ekologisk ståndortsindikator (E)</b> – visar särskilda markförhållanden, t.ex. kalk eller rörligt markvatten.');
+  if (sp.rl && sp.rl !== 'RE') lines.push(`<b>Rödlistad: ${esc(RL_LABEL[sp.rl] || sp.rl)} (${sp.rl})</b>${sp.rl === 'DD' ? ' – kunskapsbrist, räknas inte som naturvårdsart.' : ' – räknas som naturvårdsart.'}`);
+  if (sp.sk) lines.push(`<b>Skyddsklassad</b> – exakt läge redovisas bara som ${sp.sk} km-ruta i leveransen.`);
+  const rare = g.n != null && g.n < 150;
+  const lik = (g.lik || []).map(i => state.species[i]).filter(Boolean);
+  const sh = openSheet(`<h3>📖 ${spName(sp)}</h3><div class="meta">${GROUP_LABEL[sp.grp] || ''} ${badges(sp)}</div>
+    ${g.img ? `<figure class="guide-fig"><img src="${GUIDE_IMG(id)}" alt="Foto av ${esc(sp.sv || sp.sci)}" loading="lazy">
+      <figcaption>Foto: ${esc(g.img.by || 'okänd')} · ${esc(g.img.lic)} · <a href="${esc(g.img.src)}" target="_blank" rel="noopener">GBIF</a>. Ett exempel – arter kan se olika ut.</figcaption></figure>` : '<p class="muted small">Inget foto i fältguiden – se Artfakta.</p>'}
+    ${lines.length ? `<div class="guide-facts">${lines.map(l => `<p>${l}</p>`).join('')}</div>` : ''}
+    ${g.wiki ? `<p class="guide-text">${esc(g.wiki.t)}</p><p class="muted small">Text: <a href="${esc(g.wiki.url)}" target="_blank" rel="noopener">Wikipedia</a> (CC BY-SA 4.0).</p>` : ''}
+    ${g.m ? `<div class="field">När den rapporteras i Sverige${seasonText(g.m) ? `: <b>${seasonText(g.m)}</b>` : ''}
+      <div class="season" aria-hidden="true">${g.m.map((v, i) => `<div><span style="height:${Math.round(v / max * 100)}%"></span><small>${MONTHS[i][0].toUpperCase()}</small></div>`).join('')}</div></div>` : ''}
+    ${g.n != null ? `<p class="small">${g.n.toLocaleString('sv-SE')} fynd i Sverige (GBIF, mest från Artportalen).${rare ? ' <b>Ovanlig art</b> – var extra noga och ta belägg.' : ''}</p>` : ''}
+    ${lik.length ? `<div class="field">Förväxla inte med (samma släkte)<div class="chips wrap">${lik.map(x => `<button type="button" class="chip guide-lik" data-id="${x.id}">${esc(cap(x.sv || x.sci))}${x.sig || (x.rl && x.rl !== 'DD') ? ' ★' : ''}</button>`).join('')}</div>
+      <p class="muted small">★ = signalart eller rödlistad.</p></div>` : ''}
+    <div class="note small"><b>Så blir du säker:</b> jämför med kännetecknen i Artfakta, kontrollera substrat och miljö, och ta foto som belägg.${(sp.sig || sp.rl) ? ' Signalarter och rödlistade arter avgör objektets värde – låt gärna en erfaren inventerare verifiera.' : ''}</div>
+    ${dyntaxaId(sp) ? `<a class="btn full" href="https://artfakta.se/taxa/${dyntaxaId(sp)}" target="_blank" rel="noopener">Artfakta: kännetecken och utbredning ↗ <span class="muted small">(kräver nät)</span></a>` : ''}
+    <button class="btn primary full" id="guide-close">Stäng</button>`, { sub: sheets.length > 0 });
+  sh.m.classList.add('guide-sheet');
+  sh.m.querySelectorAll('.guide-lik').forEach(b => b.onclick = () => openGuide(+b.dataset.id));
+  $('#guide-close', sh.m).onclick = () => closeSheet(sh);
+}
+// 📖-knappar var som helst i appen (även inne i andra knappar)
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-guide]'); if (!b) return;
+  e.preventDefault(); e.stopPropagation(); openGuide(+b.dataset.guide);
+}, true);
+const guideBtn = id => `<span class="guide-btn" role="button" tabindex="0" data-guide="${id}" aria-label="Fältguide">📖</span>`;
+// Bläddra i fältguiden: signalarter och rödlistade arter i skogsurvalet
+async function openGuideBrowser() {
+  const g = await loadGuide();
+  let grp = 'alla', q = '', only = 'alla';
+  const sh = openSheet(`<div class="row between"><h3>📖 Fältguide</h3></div>
+    <p class="small muted">Signalarter, E-arter och rödlistade arter i skogsurvalet – med foto, säsong och förväxlingsarter. Fungerar offline när bilderna är sparade.</p>
+    <div class="group-grid" id="gb-groups">${GROUPS.filter(x => x.id !== 'fagel' || true).map(x => `<button class="chip ${x.id === grp ? 'on' : ''}" data-g="${x.id}">${x.short || x.label}</button>`).join('')}</div>
+    <div class="seg" id="gb-only"><button data-o="alla" class="on">Alla</button><button data-o="sig">Signalarter</button><button data-o="rl">Rödlistade</button></div>
+    <input type="search" id="gb-q" class="input" placeholder="Sök i fältguiden">
+    <div class="guide-grid" id="gb-list"></div>
+    <button class="btn full" id="gb-offline">⬇ Spara fältguidens bilder offline</button><div class="small" id="gb-status"></div>`);
+  const m = sh.m; m.classList.add('full');
+  const norm = t => (t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const draw = () => {
+    const t = norm(q);
+    let list = Object.keys(g).map(Number).map(i => state.species[i]).filter(Boolean);
+    if (grp !== 'alla') list = list.filter(x => x.grp === grp);
+    if (only === 'sig') list = list.filter(x => x.sig); if (only === 'rl') list = list.filter(x => x.rl && x.rl !== 'DD');
+    if (t) list = list.filter(x => norm(x.sv + ' ' + (x.alt || '')).includes(t) || norm(x.sci).includes(t));
+    list.sort((a, b) => (a.sv || a.sci).localeCompare(b.sv || b.sci, 'sv'));
+    $('#gb-list', m).innerHTML = list.map(x => `<button class="guide-card" data-guide="${x.id}">${g[x.id].img ? `<img src="${GUIDE_IMG(x.id)}" alt="" loading="lazy">` : '<div class="noimg">📖</div>'}
+      <span class="cl-name">${esc(cap(x.sv || x.sci))}</span><i class="sci">${esc(x.sci)}</i><span class="meta">${badges(x)}</span></button>`).join('') || '<p class="muted center">Inga arter.</p>';
+  };
+  m.querySelectorAll('#gb-groups .chip').forEach(c => c.onclick = () => { grp = c.dataset.g; m.querySelectorAll('#gb-groups .chip').forEach(x => x.classList.toggle('on', x === c)); draw(); });
+  m.querySelectorAll('#gb-only button').forEach(c => c.onclick = () => { only = c.dataset.o; m.querySelectorAll('#gb-only button').forEach(x => x.classList.toggle('on', x === c)); draw(); });
+  $('#gb-q', m).oninput = e => { q = e.target.value; draw(); };
+  $('#gb-offline', m).onclick = async () => {
+    const ids = Object.keys(g).filter(i => g[i].img); const st = $('#gb-status', m); let n = 0;
+    const c = await caches.open('skog-guide-v1');
+    for (const i of ids) { const u = GUIDE_IMG(i); if (!(await c.match(u))) { try { const r = await fetch(u); if (r.ok) await c.put(u, r); } catch { /* offline */ } } st.textContent = `Sparar bilder … ${++n}/${ids.length}`; }
+    st.textContent = `✅ ${ids.length} bilder sparade – fältguiden fungerar offline.`; await db.setKV('guideOffline', Date.now());
+  };
+  draw();
+}
+
+// ---------------- Leveranskontroll ----------------
+// Går igenom inventeringen innan leverans: fel (bör åtgärdas), varningar och tips.
+function deliveryCheck() {
+  const out = []; const add = (lvl, text, act, label) => out.push({ lvl, text, act, label });
+  const p = state.project;
+  if (!p.name) add('warn', 'Uppdraget saknar namn.', openProjectEditor, 'Uppdrag');
+  if (!p.client) add('warn', 'Beställare saknas.', openProjectEditor, 'Uppdrag');
+  if (!p.inventors) add('warn', 'Inventerare saknas.', openProjectEditor, 'Uppdrag');
+  if (!state.objects.length) add('warn', 'Inga naturvärdesobjekt är avgränsade.');
+  for (const ob of state.objects) {
+    const open = () => openObjectEditor(state.objects.find(x => x.id === ob.id));
+    const name = `<b>${esc(ob.name)}</b>`;
+    const s = nvSummary(ob.id);
+    if (!ob.polygon || ob.polygon.length < 3) add('err', `${name}: saknar avgränsning.`, open, 'Öppna');
+    else if (polygonAreaM2(ob.polygon) < 100) add('info', `${name}: mycket liten yta (${formatArea(polygonAreaM2(ob.polygon))}) – stämmer avgränsningen?`, open, 'Öppna');
+    if (!ob.biotop) add('err', `${name}: biotop saknas.`, open, 'Öppna');
+    if (!ob.klass) add('warn', `${name}: ingen naturvärdesklass. Är det inget naturvärdesobjekt – ta bort det.`, open, 'Öppna');
+    if (ob.klass === 4 && !klass4Included()) add('err', `${name}: klass 4 men tillägget Naturvärdesklass 4 ingår inte i uppdraget.`, open, 'Öppna');
+    if (ob.klass && (!ob.biotopvarde || !ob.artvarde)) add('warn', `${name}: biotopvärde och/eller artvärde saknas (kontorsläget).`, open, 'Öppna');
+    if (ob.biotopvarde && ob.artvarde && ob.klass) {
+      const k = MATRIX[ob.artvarde][ob.biotopvarde];
+      if (k && k !== ob.klass) add('warn', `${name}: klass ${ob.klass}, men matrisen ger klass ${k}. Motivera avvikelsen.`, open, 'Öppna');
+    }
+    if (ob.klass && !ob.bvMotiv) add('warn', `${name}: motivering av biotopvärdet saknas.`, open, 'Öppna');
+    if (ob.klass && !ob.avMotiv) add('warn', `${name}: motivering av artvärdet saknas.`, open, 'Öppna');
+    if (s.nRl + s.nS + s.nE >= 2 && ob.artvarde === 'obetydligt') add('warn', `${name}: ${s.nRl + s.nS + s.nE} naturvårdsarter men artvärde "obetydligt".`, open, 'Öppna');
+    if (s.nUnsure) add('warn', `${name}: ${s.nUnsure} osäkra naturvårdsarter räknas inte – verifiera eller låt dem stå som osäkra.`, open, 'Öppna');
+    if (ob.klass && !(ob.photoIds || []).length) add('info', `${name}: inga foton på objektet.`, open, 'Öppna');
+    if (ob.klass && !ob.osakerhet) add('info', `${name}: osäkerhet i klassningen är inte angiven.`, open, 'Öppna');
+  }
+  for (const o of state.observations) {
+    const sp = state.species[o.speciesId] || {};
+    const open = () => openObsDetail(o.id);
+    const nm = `<b>${esc(cap(sp.sv || sp.sci || '?'))}</b>`;
+    if (sp.syn === 'indet') { add('err', `Obestämt fynd (${esc(GROUP_LABEL[sp.grp] || '')}) – bestäm arten eller ta bort fyndet.`, open, 'Öppna'); continue; }
+    if (sp.syn) continue;
+    if (!o.pos) add('err', `${nm}: saknar position.`, open, 'Öppna');
+    else if (o.pos.acc > 25) add('info', `${nm}: osäker position (±${o.pos.acc} m).`, open, 'Öppna');
+    if (isNvArt(sp) && o.method === 'Endast AI-förslag') add('warn', `${nm}: bara AI-förslag – kontrollera arten och välj metod.`, open, 'Öppna');
+    if (isNvArt(sp) && !(o.photoIds || []).length && ['CR', 'EN', 'VU'].includes(sp.rl)) add('warn', `${nm} (${sp.rl}): inget foto som belägg.`, open, 'Öppna');
+    else if (isNvArt(sp) && !(o.photoIds || []).length) add('info', `${nm}: inget foto som belägg.`, open, 'Öppna');
+    if (sp.sk && state.settings.protect === false) add('err', `${nm}: skyddsklassad art men skyddet i exporten är avstängt.`);
+  }
+  if (!state.lastBackup || Date.now() - state.lastBackup > 86400000) add('warn', 'Ingen säkerhetskopia det senaste dygnet.');
+  const order = { err: 0, warn: 1, info: 2 };
+  return out.sort((a, b) => order[a.lvl] - order[b.lvl]);
+}
+function openDeliveryCheck(onDeliver) {
+  const items = deliveryCheck();
+  const n = l => items.filter(x => x.lvl === l).length;
+  const ICON = { err: '⛔', warn: '⚠️', info: 'ℹ️' };
+  const sh = openSheet(`<h3>✓ Leveranskontroll</h3>
+    ${items.length ? `<p class="small">${n('err')} att åtgärda · ${n('warn')} varningar · ${n('info')} tips</p>` : '<p class="ok-text"><b>✅ Inga problem hittades.</b></p>'}
+    <ul class="check-list">${items.map((x, i) => `<li class="ck-${x.lvl}"><span aria-hidden="true">${ICON[x.lvl]}</span><span class="grow">${x.text}</span>${x.act ? `<button class="btn small" data-ck="${i}">${x.label || 'Öppna'}</button>` : ''}</li>`).join('')}</ul>
+    <p class="muted small">Kontrollen ersätter inte din egen bedömning – den hittar sådant som ofta glöms. Kontrollera alltid mot ${esc(state.project.standard)}.</p>
+    ${onDeliver ? `<div class="row gap actions"><button class="btn grow" id="ck-cancel">Åtgärda först</button><button class="btn ${n('err') ? '' : 'primary'} grow" id="ck-go">${n('err') ? 'Leverera ändå' : 'Leverera'}</button></div>` : '<button class="btn primary full" id="ck-cancel">Stäng</button>'}`);
+  sh.m.querySelectorAll('[data-ck]').forEach(b => b.onclick = () => { const it = items[+b.dataset.ck]; closeSheet(sh); setTimeout(it.act, 0); });
+  $('#ck-cancel', sh.m).onclick = () => closeSheet(sh);
+  const go = $('#ck-go', sh.m); if (go) go.onclick = () => { closeSheet(sh); onDeliver(); };
+}
 
 // ---------------- Fältvyn: Art · Foto · Objekt · Punkt ----------------
 function recentSpecies(n = 8) {
@@ -384,6 +531,7 @@ function renderIdView() {
         <div class="tile"><button class="btn bigtile" id="act-obj"><span aria-hidden="true">▣</span>Objekt<small>ny avgränsning</small></button>${info('objekt')}</div>
         <div class="tile"><button class="btn bigtile" id="act-note"><span aria-hidden="true">✎</span>Punkt<small>anteckning/foto</small></button>${info('punkt')}</div>
       </div>
+      <button class="btn full guide-entry" id="act-guide">📖 Fältguide – signalarter och rödlistade</button>
       ${recent.length ? `<div class="card"><div class="row between"><h3>Senast</h3>${info('senast')}</div><p class="muted small">Ett tryck = nytt fynd här. Håll inne för detaljer.</p>
         <div class="recent">${recent.map(id => { const sp = state.species[id]; return `<button class="chip recent-chip" data-id="${id}">${esc(cap(sp.sv || sp.sci))}</button>`; }).join('')}</div></div>` : ''}`;
   }
@@ -406,6 +554,7 @@ function renderIdView() {
   const art = $('#act-art'); if (art) art.onclick = () => openArtSheet(objectAt(gps.fresh(30000))?.id || null);
   const ao = $('#act-obj'); if (ao) ao.onclick = () => newObject();
   const an = $('#act-note'); if (an) an.onclick = () => openNoteSheet();
+  const ag = $('#act-guide'); if (ag) ag.onclick = openGuideBrowser;
   v.querySelectorAll('.recent-chip').forEach(c => {
     let held = false, timer = null;
     c.onpointerdown = () => { held = false; timer = setTimeout(() => { held = true; buzz(15); state.result = null; openSaveSheet(+c.dataset.id, null); }, 550); };
@@ -727,7 +876,7 @@ function openSaveSheet(speciesId, prob, existing, draft) {
   const moreOpen = !!(sub.diam || sub.decay || o.count || o.notes);
   const sheet = openSheet(`<h3>${spName(sp)}</h3>
     <div class="meta">${GROUP_LABEL[sp.grp] || ''} ${badges(sp)} ${prob != null ? `<span class="muted small">AI ${Math.round(prob * 100)} %</span>` : ''}
-      <button class="btn small ghost" id="sv-change">Byt art</button></div>
+      <button class="btn small ghost" id="sv-change">Byt art</button>${sp.syn ? '' : `<button class="btn small ghost" data-guide="${sp.id}">📖 Fältguide</button>`}</div>
     ${sp.sk ? `<div class="note warn small"><b>Skyddsklassad</b> – exakt läge, datum och kommentarer döljs i leveransen (${sp.sk} km-ruta).${sp.skR && sp.skR !== 'H' ? ' ' + esc(sp.skR) : ''}</div>` : ''}
     <label class="check big-check"><input type="checkbox" id="sv-unsure" ${status0 === 'unsure' ? 'checked' : ''}> <span class="grow"><b>Osäker bestämning</b> <span class="muted small">– räknas inte i objektets artvärde</span></span>${info('osaker')}</label>
     <div class="small" id="sv-status-note"></div>
@@ -870,7 +1019,7 @@ async function openObsDetail(id) {
   const photos = await Promise.all((o.photoIds || []).map(pid => db.get('photos', pid)));
   const urls = photos.filter(Boolean).map(p => URL.createObjectURL(p.blob));
   const sw = o.pos ? toSweref99TM(o.pos.lat, o.pos.lon) : null;
-  const m = modal(`<h3>${spName(sp)}</h3><div class="meta">${GROUP_LABEL[sp.grp] || ''} ${badges(sp)}</div>
+  const m = modal(`<h3>${spName(sp)}</h3><div class="meta">${GROUP_LABEL[sp.grp] || ''} ${badges(sp)} ${sp.syn ? '' : `<button class="btn small ghost" data-guide="${sp.id}">📖 Fältguide</button>`}</div>
     <div class="gallery">${urls.map(u => `<img src="${u}" alt="">`).join('')}</div>
     <table class="kv">
       <tr><th>Tid</th><td>${new Date(o.time).toLocaleString('sv-SE')}</td></tr>
@@ -1219,7 +1368,7 @@ function openChecklist(obId, { spatial = false } = {}) {
       const os = r.get(s.id) || [];
       const amount = os.map(o => o.amount).filter(Boolean).pop();
       return `<button class="cl-item ${os.length ? 'on' : ''}" data-id="${s.id}">
-        <span class="cl-name">${esc(s.sv || s.sci)}</span><i class="sci">${esc(s.sci)}</i>
+        <span class="cl-name">${esc(s.sv || s.sci)} ${guideBtn(s.id)}</span><i class="sci">${esc(s.sci)}</i>
         <span class="meta">${badges(s)} ${os.length ? `<span class="badge">✓ ${os.length}${amount ? ' · ' + esc(amount) : ''}</span>` : ''}${os.some(o => o.unsure) ? '<span class="badge bad">Osäker</span>' : ''}</span></button>`;
     }).join('') || '<div class="muted center">Inga arter.</div>';
     m.querySelectorAll('.cl-item').forEach(b => b.onclick = () => {
@@ -1516,6 +1665,7 @@ async function renderMoreView() {
       <label class="btn full ghost"><input type="file" accept=".zip" id="im-zip" hidden>Återställ från säkerhetskopia …</label>
     </div>
     <div class="card"><div class="row between"><h3>📦 Leverans</h3>${info('leverans')}</div>
+      <button class="btn full" id="btn-check">✓ Kontrollera inventeringen</button>
       <button class="btn primary full big" id="ex-delivery">📦 Leverans till beställare (ZIP${state.settings.protect !== false ? ', skyddad' : ''})</button>
       <p class="small muted">GeoJSON, fynd- och objektprotokoll (CSV), rapportunderlag och foton. ${state.observations.filter(o => protectionKm(o, state.species[o.speciesId])).length} skyddsklassade fynd redovisas generaliserat.</p>
       <details class="more-files"><summary>Enskilda filer och inställningar</summary><div class="col gap">
@@ -1560,6 +1710,7 @@ async function renderMoreView() {
   $('#set-prot').onchange = e => { state.settings.protect = e.target.checked; saveSettings(); if (!e.target.checked) toast('OBS: exporterna innehåller nu exakta lägen för skyddsklassade arter'); };
   $('#set-office').onchange = e => { state.settings.office = e.target.checked; saveSettings(); };
   $('#btn-project').onclick = openProjectEditor;
+  $('#btn-check').onclick = () => openDeliveryCheck(null);
   $('#btn-maplayers').onclick = openLayerSheet;
   $('#set-acc').onchange = e => { state.settings.accurate = e.target.checked; saveSettings(); };
   $('#set-vib').onchange = e => { state.settings.vibrate = e.target.checked; saveSettings(); };
@@ -1573,7 +1724,11 @@ async function renderMoreView() {
   $('#ex-app').onclick = () => shareOrDownload(new Blob([protectedAppendixHTML(state.project, state.objects, state.observations, state.species)], { type: 'text/html' }), `KONFIDENTIELL_skyddsklassade_${stamp}.html`);
   const safe = t => (t || 'okand').replace(/[^\p{L}\p{N}_-]+/gu, '_');
   // Leverans: allt som beställaren behöver, med skydd enligt inställningen. Foton på skyddade fynd utelämnas.
-  $('#ex-delivery').onclick = async () => {
+  $('#ex-delivery').onclick = () => {
+    const items = deliveryCheck();
+    if (items.some(x => x.lvl !== 'info')) openDeliveryCheck(deliver); else deliver();
+  };
+  const deliver = async () => {
     const o = opts();
     const photos = await db.all('photos');
     const files = [
