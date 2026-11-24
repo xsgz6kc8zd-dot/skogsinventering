@@ -56,16 +56,21 @@ def gbif_facts(sp):
         for c in (f.get('facets') or [{}])[0].get('counts', []):
             months[int(c['name']) - 1] = c['count']
         media = []
-        for lic in ('CC0_1_0', 'CC_BY_4_0'):
-            r = get(f'https://api.gbif.org/v1/occurrence/search?taxonKey={key}&country=SE&mediaType=StillImage&license={lic}&limit=8')
+        # Bara fältobservationer (inte herbariebelägg). Sverige först, sedan grannländerna.
+        INAT = '&datasetKey=50c9509d-22c7-4a22-a47d-8c48425ef4a7'  # iNaturalist, granskade observationer
+        tries = [(f'&country={c}' + INAT, l) for c in ('SE', 'NO', 'FI', 'DK') for l in ('CC0_1_0', 'CC_BY_4_0')]
+        tries += [(INAT, l) for l in ('CC0_1_0', 'CC_BY_4_0')] + [('&country=SE&basisOfRecord=HUMAN_OBSERVATION', l) for l in ('CC0_1_0', 'CC_BY_4_0')]
+        for extra, lic in tries:
+            if len(media) >= 3:
+                break
+            r = get(f'https://api.gbif.org/v1/occurrence/search?taxonKey={key}{extra}&mediaType=StillImage&license={lic}&limit=8')
             for o in r.get('results', []):
                 for mm in o.get('media', []):
                     if mm.get('type') == 'StillImage' and mm.get('identifier'):
                         media.append({'url': mm['identifier'], 'by': mm.get('rightsHolder') or mm.get('creator') or o.get('recordedBy') or '',
                                       'lic': 'CC0' if lic == 'CC0_1_0' else 'CC BY 4.0', 'src': f"https://www.gbif.org/occurrence/{o['key']}"})
                         break
-            if len(media) >= 3:
-                break
+        media.sort(key=lambda m: 'inaturalist' not in m['url'])
         return {'key': key, 'n': f.get('count', 0), 'months': months, 'media': media[:4]}
     return cached(f"gbif_{sp['id']}.json", fetch)
 
@@ -131,7 +136,7 @@ def main():
             print('GBIF-fel', sp['sci'], str(ex)[:80]); return {}, None
     pre = {}
     if '--no-img' not in sys.argv:
-        with ThreadPoolExecutor(8) as ex:
+        with ThreadPoolExecutor(3) as ex:
             for k, (sp, r) in enumerate(zip(target, ex.map(facts, target))):
                 pre[sp['id']] = r
                 if k % 50 == 0:
