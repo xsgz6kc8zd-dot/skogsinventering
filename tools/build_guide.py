@@ -21,7 +21,7 @@ UA = 'skogsinventering-build/1.0 (https://github.com/xsgz6kc8zd-dot/skogsinvente
 os.makedirs(CACHE, exist_ok=True); os.makedirs(OUT_IMG, exist_ok=True)
 
 
-def get(url, binary=False, tries=4):
+def get(url, binary=False, tries=5):
     for k in range(tries):
         try:
             req = urllib.request.Request(url, headers={'User-Agent': UA})
@@ -31,7 +31,7 @@ def get(url, binary=False, tries=4):
         except Exception as e:  # noqa: BLE001
             if k == tries - 1:
                 raise
-            time.sleep(2 + 4 * k)
+            time.sleep(30 * (k + 1) if '429' in str(e) else 2 + 4 * k)  # 429: GBIF ber oss vänta
 
 
 def cached(name, fn):
@@ -61,8 +61,9 @@ def gbif_facts(sp):
         tries = [(f'&country={c}' + INAT, l) for c in ('SE', 'NO', 'FI', 'DK') for l in ('CC0_1_0', 'CC_BY_4_0')]
         tries += [(INAT, l) for l in ('CC0_1_0', 'CC_BY_4_0')] + [('&country=SE&basisOfRecord=HUMAN_OBSERVATION', l) for l in ('CC0_1_0', 'CC_BY_4_0')]
         for extra, lic in tries:
-            if len(media) >= 3:
+            if len(media) >= 2:
                 break
+            time.sleep(0.4)
             r = get(f'https://api.gbif.org/v1/occurrence/search?taxonKey={key}{extra}&mediaType=StillImage&license={lic}&limit=8')
             for o in r.get('results', []):
                 for mm in o.get('media', []):
@@ -139,7 +140,7 @@ def main():
             print('GBIF-fel', sp['sci'], str(ex)[:80]); return {}, None
     pre = {}
     if '--no-img' not in sys.argv:
-        with ThreadPoolExecutor(2) as ex:
+        with ThreadPoolExecutor(1) as ex:
             for k, (sp, r) in enumerate(zip(target, ex.map(facts, target))):
                 pre[sp['id']] = r
                 if k % 50 == 0:
