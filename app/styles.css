@@ -397,3 +397,9 @@ body.on-map .map-wrap { height: calc(100dvh - 60px - 62px - env(safe-area-inset-
 .modal.full .modal-close { top: calc(8px + env(safe-area-inset-top)); }
 .mapbtn.mapinfo { height: 52px; border-radius: 12px; border: 1px solid rgba(0,0,0,.25); background: #fff; }
 .mapbtn.mapinfo::after { display: none; }
+
+/* ---------- iPhone som hemskärmsapp: fyll hela skärmen ----------
+   Med genomskinligt statusfält räknar iOS ibland bort statusfältets höjd från sidans höjd,
+   så att menyn längst ner hamnar en bit upp med ett svart fält under. */
+html { min-height: calc(100% + env(safe-area-inset-top)); background: var(--bg); }
+body.on-map .map-wrap { position: fixed; left: 0; right: 0; top: var(--header-h, 60px); bottom: var(--nav-h, 62px); height: auto; }

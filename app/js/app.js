@@ -1712,6 +1712,15 @@ function logTrack(p) {
   if (Date.now() - trackSaved > 30000) { trackSaved = Date.now(); db.setKV('track', t); if (state.view === 'map') drawMapData(); }
 }
 
+// Kartans yta mäts från verklig rubrik- och menyhöjd (robust mot iOS-avvikelser i 100vh/dvh)
+function measureChrome() {
+  const h = document.querySelector('header.top'), n = document.querySelector('nav.tabs');
+  if (h) document.documentElement.style.setProperty('--header-h', h.getBoundingClientRect().bottom + 'px');
+  if (n) document.documentElement.style.setProperty('--nav-h', (window.innerHeight - n.getBoundingClientRect().top) + 'px');
+  if (mapApi) mapApi.invalidate();
+}
+window.addEventListener('resize', measureChrome); window.addEventListener('orientationchange', () => setTimeout(measureChrome, 300));
+
 async function main() {
   state.settings = { ...state.settings, ...(await db.getKV('settings') || {}) };
   delete state.settings.generalize; // ersatt av skydd enligt Artdatabankens skyddsklassning
@@ -1738,7 +1747,7 @@ async function main() {
   window.addEventListener('online', applyMapSettings); window.addEventListener('offline', applyMapSettings);
   window.addEventListener('online', updateNetPill); window.addEventListener('offline', updateNetPill); updateNetPill();
   updateBackupPill(); setInterval(updateBackupPill, 600000);
-  render(); renderActiveBar();
+  render(); renderActiveBar(); measureChrome(); setTimeout(measureChrome, 500);
   const rec = await db.getKV('recording');  // återuppta en gränsinspelning som pågick när appen stängdes
   if (rec && rec.obId && state.objects.some(o => o.id === rec.obId)) { await startRecording(rec.obId); toast('Gränsinspelningen fortsätter'); }
   if (state.modelReady) ensureModel().catch(() => {}); // värm upp modellen i bakgrunden
