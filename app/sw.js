@@ -1,6 +1,6 @@
 // Service worker: gör appen helt offline. Appskalet förcachas; AI-modellen
 // (≈100 MB) hämtas av appen själv med förloppsindikator till cachen 'skog-model-v1'.
-const VERSION = 'skog-shell-v2.1.0';
+const VERSION = 'skog-shell-v2.1.1';
 const TILE_CACHE = 'skog-tiles-v1';
 const SHELL = [
   './', './index.html', './styles.css', './manifest.webmanifest',
